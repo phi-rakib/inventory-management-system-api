@@ -4,21 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DepositCategoryRequest;
 use App\Models\DepositCategory;
+use Illuminate\Support\Facades\Gate;
 
 class DepositCategoryController extends Controller
 {
     public function index()
     {
+        Gate::authorize('viewAny', DepositCategory::class);
+
         return DepositCategory::latest()->paginate(20);
     }
 
     public function show(DepositCategory $depositCategory)
     {
+        Gate::authorize('view', $depositCategory);
+        
         return $depositCategory;
     }
 
     public function store(DepositCategoryRequest $request)
     {
+        Gate::authorize('create', DepositCategory::class);
+
         DepositCategory::create($request->validated());
 
         return response()->json([
@@ -28,6 +35,8 @@ class DepositCategoryController extends Controller
 
     public function update(DepositCategoryRequest $request, DepositCategory $depositCategory)
     {
+        Gate::authorize('update', $depositCategory);
+
         $depositCategory->update($request->validated());
 
         return response()->json([
@@ -37,6 +46,8 @@ class DepositCategoryController extends Controller
 
     public function destroy(DepositCategory $depositCategory)
     {
+        Gate::authorize('delete', $depositCategory);
+
         $depositCategory->delete();
 
         return response()->json([
@@ -46,6 +57,8 @@ class DepositCategoryController extends Controller
 
     public function restore(DepositCategory $depositCategory)
     {
+        Gate::authorize('restore', $depositCategory);
+        
         $depositCategory->restore();
 
         return response()->json([
