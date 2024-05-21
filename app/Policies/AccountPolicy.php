@@ -15,7 +15,6 @@ class AccountPolicy
      */
     public function viewAny(User $user): bool
     {
-        dd($user->toArray());
         return $user->can('account-list');
     }
 

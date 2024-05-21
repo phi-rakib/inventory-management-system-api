@@ -31,23 +31,47 @@ class PermissionSeeder extends Seeder
             'account-delete',
             'account-restore',
             'account-force-delete',
+            'deposit-category-list',
+            'deposit-category-create',
+            'deposit-category-edit',
+            'deposit-category-delete',
+            'deposit-category-restore',
+            'deposit-category-force-delete',
         ];
 
         foreach ($permissions as $permission) {
-            Permission::create(['name' => $permission]);
+            Permission::updateOrCreate(
+                ['name' => $permission],
+                [
+                    'name' => $permission,
+                    'guard_name' => 'web',
+                    'created_at' => now(),
+                    'updated_at' => now(),
+                ]
+            );
         }
 
-        $user = User::create([
-            'name' => 'Rakibul Haider',
-            'email' => 'mdrakibulhaider.int@gmail.com',
-            'password' => Hash::make('password'),
-        ]);
+        $user = User::updateOrCreate(
+            [
+                'email' => 'mdrakibulhaider.int@gmail.com',
+            ],
+            [
+                'name' => 'Rakibul Haider',
+                'password' => Hash::make('password'),
+            ],
+        );
 
-        $role = Role::create([
-            'name' => 'Admin',
-        ]);
+        $role = Role::updateOrCreate(
+            ['name' => 'Admin'],
+            [
+                'name' => 'Admin',
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
+        );
 
-        $permissions = Permission::pluck('id','id')->all();
+        $permissions = Permission::pluck('id', 'id')->all();
 
         $role->syncPermissions($permissions);
 
