@@ -21,7 +21,7 @@ class DepositCategoryFactory extends Factory
             'name' => fake()->name(),
             'description' => fake()->sentence(),
             'slug' => fake()->slug(),
-            'created_by' => User::first(['id'])->value('id'),
+            'created_by' => User::factory(),
         ];
     }
 }
