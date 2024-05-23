@@ -23,7 +23,7 @@ class AccountFactory extends Factory
             'account_number' => fake()->numberBetween(1000000, 9999999999999999),
             'description' => fake()->sentence(),
             'status' => fake()->randomElement(['active', 'inactive']),
-            'created_by' => User::first(['id'])->value('id'),
+            'created_by' => User::factory(),
         ];
     }
 }
