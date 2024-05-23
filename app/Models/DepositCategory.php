@@ -34,4 +34,9 @@ class DepositCategory extends Model
     {
         return $this->belongsTo(User::class, 'deleted_by');
     }
+
+    public function deposits()
+    {
+        return $this->hasMany(Deposit::class);
+    }
 }

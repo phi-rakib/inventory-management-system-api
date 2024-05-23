@@ -40,4 +40,9 @@ class Account extends Model
         return $this->belongsTo(User::class, 'deleted_by')
             ->select(['id', 'name']);
     }
+
+    public function deposits()
+    {
+        return $this->hasMany(Deposit::class);
+    }
 }
