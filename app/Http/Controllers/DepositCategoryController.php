@@ -52,7 +52,7 @@ class DepositCategoryController extends Controller
 
         return response()->json([
             'message' => 'Deposit category deleted successfully.'
-        ], 200);
+        ], 204);
     }
 
     public function restore(DepositCategory $depositCategory)
