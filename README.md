@@ -1,5 +1,7 @@
 # Inventory Management System API
 
+[![Tests](https://github.com/phi-rakib/inventory-management-system-api/actions/workflows/run-tests.yml/badge.svg)](https://github.com/phi-rakib/inventory-management-system-api/actions/workflows/run-tests.yml)
+
 ## Overview
 
 This project is an Inventory Management System API built with Laravel. It consists of various modules to handle different aspects of inventory management, including product management, sales, purchases, product transfers, user roles and permissions, reporting, settings, accounts, and a dashboard for statistics and charts.
