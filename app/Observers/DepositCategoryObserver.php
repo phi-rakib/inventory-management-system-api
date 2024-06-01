@@ -17,9 +17,4 @@ class DepositCategoryObserver
         $depositCategory->slug = str($depositCategory->name)->slug()->toString();
         $depositCategory->updated_by = auth()->id();
     }
-
-    public function deleting(DepositCategory $depositCategory): void
-    {
-        $depositCategory->deleted_by = auth()->id();
-    }
 }
