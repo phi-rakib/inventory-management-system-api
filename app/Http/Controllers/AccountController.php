@@ -13,7 +13,7 @@ class AccountController extends Controller
     {
         Gate::authorize('viewAny', Account::class);
 
-        return Account::with(['createdBy'])->latest()->get();
+        return Account::with(['createdBy'])->latest()->paginate(20);
     }
 
     public function show(Account $account)
