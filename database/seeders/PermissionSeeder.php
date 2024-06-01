@@ -42,6 +42,12 @@ class PermissionSeeder extends Seeder
             'payment-method-delete',
             'payment-method-restore',
             'payment-method-force-delete',
+            'deposit-list',
+            'deposit-create',
+            'deposit-edit',
+            'deposit-delete',
+            'deposit-restore',
+            'deposit-force-delete',
         ];
 
         foreach ($permissions as $permission) {
