@@ -48,6 +48,12 @@ class PermissionSeeder extends Seeder
             'deposit-delete',
             'deposit-restore',
             'deposit-force-delete',
+            'expense-category-list',
+            'expense-category-create',
+            'expense-category-edit',
+            'expense-category-delete',
+            'expense-category-restore',
+            'expense-category-force-delete',
         ];
 
         foreach ($permissions as $permission) {
