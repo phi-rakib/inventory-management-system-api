@@ -50,7 +50,7 @@ class DepositCategoryController extends Controller
 
         $depositCategory->deleted_by = auth()->id();
         $depositCategory->save();
-        
+
         $depositCategory->delete();
 
         return response()->json([
