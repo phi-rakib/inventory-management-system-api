@@ -47,7 +47,7 @@ class PaymentMethodController extends Controller
 
         $paymentMethod->deleted_by = auth()->id();
         $paymentMethod->save();
-        
+
         $paymentMethod->delete();
 
         return response()->json(['message' => 'Payment method deleted'], 204);
