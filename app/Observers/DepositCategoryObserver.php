@@ -11,7 +11,7 @@ class DepositCategoryObserver
         $depositCategory->slug = str($depositCategory->name)->slug()->toString();
         $depositCategory->created_by = auth()->id();
     }
-    
+
     public function updating(DepositCategory $depositCategory): void
     {
         $depositCategory->slug = str($depositCategory->name)->slug()->toString();

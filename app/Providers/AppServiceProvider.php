@@ -3,7 +3,6 @@
 namespace App\Providers;
 
 use App\Models\Account;
-use App\Models\Deposit;
 use App\Models\DepositCategory;
 use App\Observers\AccountObserver;
 use App\Observers\DepositCategoryObserver;
