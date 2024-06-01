@@ -35,7 +35,7 @@ class AccountController extends Controller
     public function update(Request $request, Account $account)
     {
         Gate::authorize('update', $account);
-        
+
         $account->update($request->only(['name', 'description', 'status']));
 
         return response()->json(['message' => 'Account updated successfully'], 200);
@@ -47,7 +47,7 @@ class AccountController extends Controller
 
         $account->delete(); // soft delete
 
-        return response()->json(['message' => 'Account deleted successfully'], 200);
+        return response()->json(['message' => 'Account deleted successfully'], 204);
     }
 
     public function restore(Account $account)
