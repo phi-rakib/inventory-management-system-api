@@ -13,7 +13,7 @@ class AccountController extends Controller
     {
         Gate::authorize('viewAny', Account::class);
 
-        return Account::with(['createdBy'])->latest()->get();
+        return Account::with(['createdBy'])->latest()->paginate(20);
     }
 
     public function show(Account $account)
@@ -36,7 +36,7 @@ class AccountController extends Controller
     {
         Gate::authorize('update', $account);
 
-        $account->update($request->validated());
+        $account->update($request->only(['name', 'description', 'status']));
 
         return response()->json(['message' => 'Account updated successfully'], 200);
     }
@@ -47,7 +47,7 @@ class AccountController extends Controller
 
         $account->delete(); // soft delete
 
-        return response()->json(['message' => 'Account deleted successfully'], 200);
+        return response()->json(['message' => 'Account deleted successfully'], 204);
     }
 
     public function restore(Account $account)

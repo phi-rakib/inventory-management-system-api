@@ -39,7 +39,7 @@ class AccountPolicy
      */
     public function update(User $user, Account $account): bool
     {
-        return $user->can('account-update');
+        return $user->can('account-edit');
     }
 
     /**
