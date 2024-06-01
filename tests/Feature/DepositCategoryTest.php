@@ -53,7 +53,11 @@ class DepositCategoryTest extends TestCase
 
         $response->assertStatus(200);
 
-        $this->assertDatabaseHas('deposit_categories', ['id' => $depositCategory->id, 'name' => 'Updated name']);
+        $this->assertDatabaseHas('deposit_categories', [
+            'id' => $depositCategory->id,
+            'name' => 'Updated name',
+            'updated_by' => auth()->id(),
+        ]);
     }
 
     public function test_user_can_read_deposit_category(): void
@@ -78,6 +82,11 @@ class DepositCategoryTest extends TestCase
         $response = $this->delete(route('depositCategories.destroy', $depositCategory->id));
 
         $response->assertStatus(204);
+
+        $this->assertSoftDeleted('deposit_categories', [
+            'id' => $depositCategory->id,
+            'deleted_by' => auth()->id(),
+        ]);
     }
 
     public function test_user_can_read_all_deposit_categories(): void

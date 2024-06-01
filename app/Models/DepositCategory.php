@@ -12,11 +12,7 @@ class DepositCategory extends Model
 
     protected $fillable = [
         'name',
-        'slug',
         'description',
-        'created_by',
-        'updated_by',
-        'deleted_by',
     ];
 
     public function createdBy()

@@ -48,6 +48,9 @@ class DepositCategoryController extends Controller
     {
         Gate::authorize('delete', $depositCategory);
 
+        $depositCategory->deleted_by = auth()->id();
+        $depositCategory->save();
+
         $depositCategory->delete();
 
         return response()->json([
