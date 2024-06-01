@@ -36,7 +36,7 @@ class PaymentMethodPolicy
      */
     public function update(User $user, PaymentMethod $paymentMethod): bool
     {
-        return $user->can('payment-method-update');
+        return $user->can('payment-method-edit');
     }
 
     /**
