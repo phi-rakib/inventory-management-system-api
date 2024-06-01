@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Facades\Auth;
 
 class StoreAccountRequest extends FormRequest
 {
@@ -11,7 +12,7 @@ class StoreAccountRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return true;
+        return Auth::check();
     }
 
     /**
@@ -24,6 +25,8 @@ class StoreAccountRequest extends FormRequest
         return [
             'name' => 'required|max:255',
             'account_number' => 'required',
+            'balance' => 'required',
+            'description' => 'nullable',
         ];
     }
 }
