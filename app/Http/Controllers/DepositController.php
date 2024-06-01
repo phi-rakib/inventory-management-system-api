@@ -34,7 +34,7 @@ class DepositController extends Controller
 
         return response()->json(['message' => 'Deposited amount deleted']);
     }
-    
+
     public function show(Deposit $deposit)
     {
         $deposit->load([

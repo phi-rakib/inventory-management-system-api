@@ -4,19 +4,10 @@ namespace Tests\Feature;
 
 use App\Models\DepositCategory;
 use App\Models\User;
-use App\Policies\DepositCategoryPolicy;
 use Database\Seeders\PermissionSeeder;
-use Illuminate\Auth\Access\Response as AccessResponse;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Illuminate\Foundation\Testing\WithoutMiddleware;
-use Illuminate\Http\Response;
-use Illuminate\Support\Facades\Gate;
 use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
-use Illuminate\Database\Events\DatabaseRefreshed;
-use Illuminate\Support\Facades\Event;
-use Spatie\Permission\Models\Role;
 
 class DepositCategoryTest extends TestCase
 {
@@ -40,7 +31,7 @@ class DepositCategoryTest extends TestCase
     {
         $this->user->givePermissionTo('deposit-category-create');
 
-        /** @var array $depositCategory **/
+        /** @var array $depositCategory * */
         $depositCategory = DepositCategory::factory()->make()->only(['name', 'description']);
 
         $response = $this->post(route('depositCategories.store'), $depositCategory);

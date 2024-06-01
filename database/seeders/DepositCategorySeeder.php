@@ -3,7 +3,6 @@
 namespace Database\Seeders;
 
 use App\Models\DepositCategory;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class DepositCategorySeeder extends Seeder
@@ -14,10 +13,9 @@ class DepositCategorySeeder extends Seeder
     public function run(): void
     {
         DepositCategory::query()->truncate();
-        
+
         DepositCategory::withoutEvents(function () {
             DepositCategory::factory(10)->create();
         });
     }
-
 }

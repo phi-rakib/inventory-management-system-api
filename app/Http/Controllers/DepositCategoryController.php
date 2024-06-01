@@ -18,7 +18,7 @@ class DepositCategoryController extends Controller
     public function show(DepositCategory $depositCategory)
     {
         Gate::authorize('view', $depositCategory);
-        
+
         return $depositCategory;
     }
 
@@ -29,7 +29,7 @@ class DepositCategoryController extends Controller
         DepositCategory::create($request->validated());
 
         return response()->json([
-            'message' => 'Deposit category created successfully.'
+            'message' => 'Deposit category created successfully.',
         ], 201);
     }
 
@@ -40,7 +40,7 @@ class DepositCategoryController extends Controller
         $depositCategory->update($request->validated());
 
         return response()->json([
-            'message' => 'Deposit category updated successfully.'
+            'message' => 'Deposit category updated successfully.',
         ], 200);
     }
 
@@ -51,18 +51,18 @@ class DepositCategoryController extends Controller
         $depositCategory->delete();
 
         return response()->json([
-            'message' => 'Deposit category deleted successfully.'
+            'message' => 'Deposit category deleted successfully.',
         ], 204);
     }
 
     public function restore(DepositCategory $depositCategory)
     {
         Gate::authorize('restore', $depositCategory);
-        
+
         $depositCategory->restore();
 
         return response()->json([
-            'message' => 'Deposit category restored successfully.'
+            'message' => 'Deposit category restored successfully.',
         ], 200);
     }
 }
