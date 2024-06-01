@@ -3,9 +3,11 @@
 namespace App\Providers;
 
 use App\Models\Account;
+use App\Models\Deposit;
 use App\Models\DepositCategory;
 use App\Observers\AccountObserver;
 use App\Observers\DepositCategoryObserver;
+use App\Observers\DepositObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -25,5 +27,6 @@ class AppServiceProvider extends ServiceProvider
     {
         Account::observe(AccountObserver::class);
         DepositCategory::observe(DepositCategoryObserver::class);
+        Deposit::observe(DepositObserver::class);
     }
 }
