@@ -9,7 +9,7 @@ class AccountObserver
     public function creating(Account $account)
     {
         $account->created_by = auth()->id();
-        $account->is_active = true;
+        $account->status = 'active';
     }
 
     public function updating(Account $account)
