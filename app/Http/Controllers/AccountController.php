@@ -35,8 +35,8 @@ class AccountController extends Controller
     public function update(Request $request, Account $account)
     {
         Gate::authorize('update', $account);
-
-        $account->update($request->validated());
+        
+        $account->update($request->only(['name', 'description', 'status']));
 
         return response()->json(['message' => 'Account updated successfully'], 200);
     }
