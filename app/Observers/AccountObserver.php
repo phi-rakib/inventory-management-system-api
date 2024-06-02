@@ -16,9 +16,4 @@ class AccountObserver
     {
         $account->updated_by = auth()->id();
     }
-
-    public function deleting(Account $account): void
-    {
-        $account->deleted_by = auth()->id();
-    }
 }

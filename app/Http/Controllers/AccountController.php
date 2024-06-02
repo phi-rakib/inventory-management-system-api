@@ -45,6 +45,9 @@ class AccountController extends Controller
     {
         Gate::authorize('delete', $account);
 
+        $account->deleted_by = auth()->id();
+        $account->save();
+
         $account->delete(); // soft delete
 
         return response()->json(['message' => 'Account deleted successfully'], 204);
