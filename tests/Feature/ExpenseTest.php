@@ -111,9 +111,9 @@ class ExpenseTest extends TestCase
                         'id',
                         'name',
                     ],
-                    'creator'=> [
+                    'creator' => [
                         'id',
-                        'name'
+                        'name',
                     ],
                 ],
             ],
@@ -153,9 +153,9 @@ class ExpenseTest extends TestCase
                 'id',
                 'name',
             ],
-            'creator'=> [
+            'creator' => [
                 'id',
-                'name'
+                'name',
             ],
         ]);
     }
