@@ -42,7 +42,7 @@ class DepositController extends Controller
 
         $deposit->deleted_by = auth()->id();
         $deposit->save();
-        
+
         $deposit->delete();
 
         return response()->json(['message' => 'Deposited amount deleted'], 204);
