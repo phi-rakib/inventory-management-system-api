@@ -75,6 +75,7 @@ class AccountTest extends TestCase
 
         $this->assertSoftDeleted('accounts', [
             'id' => $account->id,
+            'deleted_by' => $this->user->id,
         ]);
     }
 

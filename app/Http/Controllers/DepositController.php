@@ -40,6 +40,9 @@ class DepositController extends Controller
     {
         Gate::authorize('delete', $deposit);
 
+        $deposit->deleted_by = auth()->id();
+        $deposit->save();
+
         $deposit->delete();
 
         return response()->json(['message' => 'Deposited amount deleted'], 204);
