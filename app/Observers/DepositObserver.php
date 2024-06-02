@@ -15,9 +15,4 @@ class DepositObserver
     {
         $deposit->updated_by = auth()->id();
     }
-
-    public function deleting(Deposit $deposit)
-    {
-        $deposit->deleted_by = auth()->id();
-    }
 }

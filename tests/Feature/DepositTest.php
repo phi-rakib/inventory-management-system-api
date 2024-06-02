@@ -78,6 +78,7 @@ class DepositTest extends TestCase
 
         $this->assertSoftDeleted('deposits', [
             'id' => $deposit->id,
+            'deleted_by' => $this->user->id,
         ]);
     }
 
