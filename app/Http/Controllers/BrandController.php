@@ -23,6 +23,7 @@ class BrandController extends Controller
 
         return $brand;
     }
+
     public function store(StoreBrandRequest $request)
     {
         Gate::authorize('create', Brand::class);

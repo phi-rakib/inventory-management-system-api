@@ -4,10 +4,8 @@ namespace Tests\Feature;
 
 use App\Models\Brand;
 use App\Models\User;
-use Database\Seeders\PermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
-use Laravel\Sanctum\Sanctum;
 use Tests\TestCase;
 
 class BrandTest extends TestCase
@@ -95,13 +93,13 @@ class BrandTest extends TestCase
 
         $response->assertJsonStructure([
             'data' => [
-               '*' => [
+                '*' => [
                     'id',
                     'name',
                     'creator' => [
                         'id',
                         'name',
-                    ]
+                    ],
                 ],
             ],
         ]);
@@ -130,7 +128,7 @@ class BrandTest extends TestCase
             'creator' => [
                 'id',
                 'name',
-            ]
+            ],
         ]);
     }
 }
