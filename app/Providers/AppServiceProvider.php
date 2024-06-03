@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Account;
+use App\Models\Attribute;
 use App\Models\Brand;
 use App\Models\Category;
 use App\Models\Deposit;
@@ -12,6 +13,7 @@ use App\Models\ExpenseCategory;
 use App\Models\PaymentMethod;
 use App\Models\UnitType;
 use App\Observers\AccountObserver;
+use App\Observers\AttributeObserver;
 use App\Observers\BrandObserver;
 use App\Observers\CategoryObserver;
 use App\Observers\DepositCategoryObserver;
@@ -46,5 +48,6 @@ class AppServiceProvider extends ServiceProvider
         Brand::observe(BrandObserver::class);
         Category::observe(CategoryObserver::class);
         UnitType::observe(UnitTypeObserver::class);
+        Attribute::observe(AttributeObserver::class);
     }
 }
