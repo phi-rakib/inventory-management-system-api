@@ -84,6 +84,12 @@ class PermissionSeeder extends Seeder
             'attribute-delete',
             'attribute-restore',
             'attribute-force-delete',
+            'attribute-value-list',
+            'attribute-value-create',
+            'attribute-value-edit',
+            'attribute-value-delete',
+            'attribute-value-restore',
+            'attribute-value-force-delete',
         ];
 
         foreach ($permissions as $permission) {
