@@ -13,6 +13,7 @@ use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\PaymentMethod;
 use App\Models\UnitType;
+use App\Models\Warehouse;
 use App\Observers\AccountObserver;
 use App\Observers\AttributeObserver;
 use App\Observers\AttributeValueObserver;
@@ -24,6 +25,7 @@ use App\Observers\ExpenseCategoryObserver;
 use App\Observers\ExpenseObserver;
 use App\Observers\PaymentMethodObserver;
 use App\Observers\UnitTypeObserver;
+use App\Observers\WarehouseObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -52,5 +54,6 @@ class AppServiceProvider extends ServiceProvider
         UnitType::observe(UnitTypeObserver::class);
         Attribute::observe(AttributeObserver::class);
         AttributeValue::observe(AttributeValueObserver::class);
+        Warehouse::observe(WarehouseObserver::class);
     }
 }

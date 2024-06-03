@@ -12,6 +12,7 @@ use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\PaymentMethodController;
 use App\Http\Controllers\UnitTypeController;
+use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login']);
@@ -28,4 +29,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('unitTypes', UnitTypeController::class);
     Route::apiResource('attributes', AttributeController::class);
     Route::apiResource('attributeValues', AttributeValueController::class);
+    Route::apiResource('warehouses', WarehouseController::class);
 });
