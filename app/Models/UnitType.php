@@ -29,4 +29,9 @@ class UnitType extends Model
     {
         return $this->belongsTo(User::class, 'deleted_by')->select(['id', 'name']);
     }
+
+    public function products()
+    {
+        return $this->hasMany(Product::class);
+    }
 }
