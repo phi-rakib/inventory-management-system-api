@@ -4,26 +4,21 @@ namespace Tests\Feature;
 
 use App\Models\Expense;
 use App\Models\User;
-use Database\Seeders\PermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
-use Laravel\Sanctum\Sanctum;
+use Illuminate\Support\Facades\Auth;
 use Tests\TestCase;
 
 class ExpenseTest extends TestCase
 {
     use RefreshDatabase;
 
-    private $user;
+    private User $user;
 
     public function setUp(): void
     {
         parent::setUp();
 
-        $this->user = User::factory()->create();
-        Sanctum::actingAs($this->user);
-
-        $this->artisan('db:seed', ['--class' => PermissionSeeder::class]);
-        $this->app->make(\Spatie\Permission\PermissionRegistrar::class)->forgetCachedPermissions();
+        $this->user = Auth::user();
     }
 
     public function test_user_can_create_expense()
