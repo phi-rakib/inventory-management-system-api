@@ -12,19 +12,18 @@ class BrandTest extends TestCase
 {
     use RefreshDatabase;
 
-    // private $user;
+    private User $user;
 
-    // public function setUp(): void
-    // {
-    //     parent::setUp();
-    // }
+    public function setUp(): void
+    {
+        parent::setUp();
+
+        $this->user = Auth::user();
+    }
 
     public function test_user_can_create_brand()
     {
-        /** @var User $user */
-        $user = Auth::user();
-
-        $user->givePermissionTo('brand-create');
+        $this->user->givePermissionTo('brand-create');
 
         $brand = Brand::factory()->make();
 
@@ -34,15 +33,13 @@ class BrandTest extends TestCase
 
         $this->assertDatabaseHas('brands', [
             'name' => $brand->name,
-            'created_by' => $user->id,
+            'created_by' => $this->user->id,
         ]);
     }
 
     public function test_user_can_update_brand()
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $user->givePermissionTo('brand-edit');
+        $this->user->givePermissionTo('brand-edit');
 
         $brand = Brand::factory()->create();
 
@@ -55,15 +52,13 @@ class BrandTest extends TestCase
         $this->assertDatabaseHas('brands', [
             'id' => $brand->id,
             'name' => 'Updated brand',
-            'updated_by' => $user->id,
+            'updated_by' => $this->user->id,
         ]);
     }
 
     public function test_user_can_delete_brand()
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $user->givePermissionTo('brand-delete');
+        $this->user->givePermissionTo('brand-delete');
 
         $brand = Brand::factory()->create();
 
@@ -73,15 +68,13 @@ class BrandTest extends TestCase
 
         $this->assertSoftDeleted('brands', [
             'id' => $brand->id,
-            'deleted_by' => $user->id,
+            'deleted_by' => $this->user->id,
         ]);
     }
 
     public function test_user_can_read_all_brands()
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $user->givePermissionTo('brand-list');
+        $this->user->givePermissionTo('brand-list');
 
         Brand::factory(10)->create();
 
@@ -107,9 +100,7 @@ class BrandTest extends TestCase
 
     public function test_user_can_read_brand()
     {
-        /** @var User $user */
-        $user = Auth::user();
-        $user->givePermissionTo('brand-list');
+        $this->user->givePermissionTo('brand-list');
 
         $brand = Brand::factory()->create();
 
