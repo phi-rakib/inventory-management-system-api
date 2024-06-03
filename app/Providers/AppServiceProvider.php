@@ -10,6 +10,7 @@ use App\Models\DepositCategory;
 use App\Models\Expense;
 use App\Models\ExpenseCategory;
 use App\Models\PaymentMethod;
+use App\Models\UnitType;
 use App\Observers\AccountObserver;
 use App\Observers\BrandObserver;
 use App\Observers\CategoryObserver;
@@ -18,6 +19,7 @@ use App\Observers\DepositObserver;
 use App\Observers\ExpenseCategoryObserver;
 use App\Observers\ExpenseObserver;
 use App\Observers\PaymentMethodObserver;
+use App\Observers\UnitTypeObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -43,5 +45,6 @@ class AppServiceProvider extends ServiceProvider
         Expense::observe(ExpenseObserver::class);
         Brand::observe(BrandObserver::class);
         Category::observe(CategoryObserver::class);
+        UnitType::observe(UnitTypeObserver::class);
     }
 }
