@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
 use App\Http\Controllers\CategoryController;
@@ -24,4 +25,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('brands', BrandController::class);
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('unitTypes', UnitTypeController::class);
+    Route::apiResource('attributes', AttributeController::class);
 });

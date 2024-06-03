@@ -78,6 +78,12 @@ class PermissionSeeder extends Seeder
             'unit-type-delete',
             'unit-type-restore',
             'unit-type-force-delete',
+            'attribute-list',
+            'attribute-create',
+            'attribute-edit',
+            'attribute-delete',
+            'attribute-restore',
+            'attribute-force-delete',
         ];
 
         foreach ($permissions as $permission) {
