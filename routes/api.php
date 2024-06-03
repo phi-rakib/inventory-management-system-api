@@ -3,6 +3,7 @@
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\BrandController;
+use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\DepositCategoryController;
 use App\Http\Controllers\DepositController;
 use App\Http\Controllers\ExpenseCategoryController;
@@ -20,4 +21,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('expenseCategories', ExpenseCategoryController::class);
     Route::apiResource('expenses', ExpenseController::class);
     Route::apiResource('brands', BrandController::class);
+    Route::apiResource('categories', CategoryController::class);
 });

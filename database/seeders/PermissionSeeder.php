@@ -66,6 +66,12 @@ class PermissionSeeder extends Seeder
             'brand-delete',
             'brand-restore',
             'brand-force-delete',
+            'category-list',
+            'category-create',
+            'category-edit',
+            'category-delete',
+            'category-restore',
+            'category-force-delete',
         ];
 
         foreach ($permissions as $permission) {
