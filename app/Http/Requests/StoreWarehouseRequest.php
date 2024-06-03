@@ -23,10 +23,10 @@ class StoreWarehouseRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:255|unique:warehouses',
+            'name' => 'required|max:255',
             'address' => 'nullable',
             'phone' => 'nullable',
-            'email' => 'nullable|email',
+            'email' => 'nullable',
         ];
     }
 }
