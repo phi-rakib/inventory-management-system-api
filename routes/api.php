@@ -9,6 +9,7 @@ use App\Http\Controllers\DepositController;
 use App\Http\Controllers\ExpenseCategoryController;
 use App\Http\Controllers\ExpenseController;
 use App\Http\Controllers\PaymentMethodController;
+use App\Http\Controllers\UnitTypeController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login']);
@@ -22,4 +23,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('expenses', ExpenseController::class);
     Route::apiResource('brands', BrandController::class);
     Route::apiResource('categories', CategoryController::class);
+    Route::apiResource('unitTypes', UnitTypeController::class);
 });

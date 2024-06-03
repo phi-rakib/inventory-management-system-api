@@ -72,6 +72,12 @@ class PermissionSeeder extends Seeder
             'category-delete',
             'category-restore',
             'category-force-delete',
+            'unit-type-list',
+            'unit-type-create',
+            'unit-type-edit',
+            'unit-type-delete',
+            'unit-type-restore',
+            'unit-type-force-delete',
         ];
 
         foreach ($permissions as $permission) {
