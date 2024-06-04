@@ -6,43 +6,16 @@ use App\Models\Product;
 
 class ProductObserver
 {
-    /**
-     * Handle the Product "created" event.
-     */
-    public function created(Product $product): void
+    public function creating(Product $product)
     {
-        //
+        $product->slug = str($product->name)->slug()->toString();
+        $product->created_by = auth()->id();
+        $product->status = 'active';
     }
 
-    /**
-     * Handle the Product "updated" event.
-     */
-    public function updated(Product $product): void
+    public function updating(Product $product)
     {
-        //
-    }
-
-    /**
-     * Handle the Product "deleted" event.
-     */
-    public function deleted(Product $product): void
-    {
-        //
-    }
-
-    /**
-     * Handle the Product "restored" event.
-     */
-    public function restored(Product $product): void
-    {
-        //
-    }
-
-    /**
-     * Handle the Product "force deleted" event.
-     */
-    public function forceDeleted(Product $product): void
-    {
-        //
+        $product->slug = str($product->name)->slug()->toString();
+        $product->updated_by = auth()->id();
     }
 }

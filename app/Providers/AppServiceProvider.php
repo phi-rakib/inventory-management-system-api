@@ -55,7 +55,7 @@ class AppServiceProvider extends ServiceProvider
         Category::observe(CategoryObserver::class);
         UnitType::observe(UnitTypeObserver::class);
         Attribute::observe(AttributeObserver::class);
-        AttributeValue::observe(AttributeValueObserver::class);        
+        AttributeValue::observe(AttributeValueObserver::class);
         Product::observe(ProductObserver::class);
         Warehouse::observe(WarehouseObserver::class);
     }
