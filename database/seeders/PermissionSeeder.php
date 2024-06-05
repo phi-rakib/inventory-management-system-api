@@ -102,6 +102,12 @@ class PermissionSeeder extends Seeder
             'warehouse-delete',
             'warehouse-restore',
             'warehouse-force-delete',
+            'adjustment-list',
+            'adjustment-create',
+            'adjustment-edit',
+            'adjustment-delete',
+            'adjustment-restore',
+            'adjustment-force-delete',
         ];
 
         foreach ($permissions as $permission) {
