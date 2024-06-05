@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Account;
+use App\Models\Adjustment;
 use App\Models\Attribute;
 use App\Models\AttributeValue;
 use App\Models\Brand;
@@ -16,6 +17,7 @@ use App\Models\Product;
 use App\Models\UnitType;
 use App\Models\Warehouse;
 use App\Observers\AccountObserver;
+use App\Observers\AdjustmentObserver;
 use App\Observers\AttributeObserver;
 use App\Observers\AttributeValueObserver;
 use App\Observers\BrandObserver;
@@ -58,5 +60,6 @@ class AppServiceProvider extends ServiceProvider
         AttributeValue::observe(AttributeValueObserver::class);
         Product::observe(ProductObserver::class);
         Warehouse::observe(WarehouseObserver::class);
+        Adjustment::observe(AdjustmentObserver::class);
     }
 }

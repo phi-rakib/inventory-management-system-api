@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountController;
+use App\Http\Controllers\AdjustmentController;
 use App\Http\Controllers\AttributeController;
 use App\Http\Controllers\AttributeValueController;
 use App\Http\Controllers\AuthController;
@@ -32,4 +33,5 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('attributeValues', AttributeValueController::class);
     Route::apiResource('products', ProductController::class);
     Route::apiResource('warehouses', WarehouseController::class);
+    Route::apiResource('adjustments', AdjustmentController::class);
 });
