@@ -68,4 +68,9 @@ class Product extends Model
     {
         return $this->belongsToMany(Attribute::class);
     }
+
+    public function adjustments()
+    {
+        return $this->belongsToMany(Adjustment::class)->withPivot(['quantity', 'type']);
+    }
 }
