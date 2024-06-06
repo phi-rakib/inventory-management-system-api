@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Account;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -14,30 +13,50 @@ class SupplierService
     {
         DB::transaction(function () use ($validatedData) {
 
-            $user = User::create([
-                'name' => $validatedData['name'],
-                'email' => $validatedData['email'],
-                'password' => Hash::make($validatedData['password']),
-            ]);
+            $user = $this->createUser($validatedData);
 
-            $user->assignRole('Supplier');
+            $account = $this->createAccount($validatedData, $user);
 
-            $account = Account::create([
-                'name' => $validatedData['name'],
-                'account_number' => $validatedData['account_number'] ?? $validatedData['name'].'0001',
-                'balance' => 0,
-            ]);
-
-            Supplier::create([
-                'name' => $validatedData['name'],
-                'email' => $validatedData['email'],
-                'description' => $validatedData['description'],
-                'address' => $validatedData['address'],
-                'phone' => $validatedData['phone'],
-                'account_id' => $account->id,
-                'user_id' => $user->id,
-            ]);
+            $this->createSupplier($validatedData, $user, $account);
         });
+    }
+
+    private function createUser($validatedData)
+    {
+        $user = User::create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'password' => Hash::make($validatedData['password']),
+        ]);
+
+        $user->assignRole('Supplier');
+
+        return $user;
+    }
+
+    private function createAccount($validatedData, $user)
+    {
+        $account = $user->account()->create([
+            'name' => $validatedData['name'],
+            'account_number' => $validatedData['account_number'] ?? $validatedData['name'].'0001',
+            'balance' => 0,
+        ]);
+
+        return $account;
+    }
+
+    private function createSupplier($validatedData, $user, $account)
+    {
+        $supplier = $account->supplier()->create([
+            'name' => $validatedData['name'],
+            'email' => $validatedData['email'],
+            'description' => $validatedData['description'],
+            'address' => $validatedData['address'],
+            'phone' => $validatedData['phone'],
+            'user_id' => $user->id,
+        ]);
+
+        return $supplier;
     }
 
     public function update(Supplier $supplier, array $data)
