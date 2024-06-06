@@ -49,6 +49,11 @@ class User extends Authenticatable
 
     public function supplier()
     {
-        return $this->hasOne(Supplier::class);
+        return $this->hasOneThrough(Supplier::class, Account::class);
+    }
+
+    public function account()
+    {
+        return $this->hasOne(Account::class);
     }
 }
