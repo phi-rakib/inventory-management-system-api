@@ -30,7 +30,7 @@ class AdjustmentTest extends TestCase
         $products = Product::factory(10)->create();
         $warehouse = Warehouse::factory()->create();
 
-        $warehouse->products()->attach($products->mapWithKeys(function ($product) use ($warehouse) {
+        $warehouse->products()->attach($products->mapWithKeys(function ($product) {
             return [
                 $product->id => [
                     'quantity' => rand(10, 20),
@@ -47,7 +47,7 @@ class AdjustmentTest extends TestCase
         });
 
         $productsWithNewQuantity = $adjustmentItems->mapWithKeys(
-            fn($item) => [$item['product_id'] => ($item['type'] == 'addition' ? $item['quantity'] : $item['quantity'] * -1)]
+            fn ($item) => [$item['product_id'] => ($item['type'] == 'addition' ? $item['quantity'] : $item['quantity'] * -1)]
         );
 
         $data = [
