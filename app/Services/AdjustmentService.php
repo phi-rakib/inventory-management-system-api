@@ -24,15 +24,19 @@ class AdjustmentService
             $adjustmentDate = $data['adjustment_date'];
 
             // update product_warehouse
-            $productIds = array_column($adjustments, 'product_id'); 
-            $products = Warehouse::find($warehouseId)->products()->whereIn('product_id', $productIds)->get();
+            $productIds = array_column($adjustments, 'product_id');
+            $products = Warehouse::find($warehouseId)
+                ->products()
+                ->whereIn('product_id', $productIds)
+                ->get(['product_id'])
+                ->pluck('pivot', 'product_id');
 
             $updates = [];
             foreach ($adjustments as $adjustment) {
-                $product = $products->where('id', $adjustment['product_id'])->first();
+                $product = isset($products[$adjustment['product_id']]) ? $products[$adjustment['product_id']] : null;
                 if ($product) {
                     $quantityChange = $adjustment['type'] == 'addition' ? $adjustment['quantity'] : -1 * $adjustment['quantity'];
-                    $updates[$product->id] = ['quantity' => $product->pivot->quantity + $quantityChange];
+                    $updates[$product['product_id']] = ['quantity' => $product['quantity'] + $quantityChange];
                 }
             }
             Warehouse::find($warehouseId)->products()->sync($updates);
