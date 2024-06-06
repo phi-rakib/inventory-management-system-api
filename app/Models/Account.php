@@ -15,10 +15,6 @@ class Account extends Model
         'account_number',
         'balance',
         'description',
-        'status',
-        'created_by',
-        'updated_by',
-        'deleted_by',
     ];
 
     public function createdBy()
@@ -42,5 +38,10 @@ class Account extends Model
     public function deposits()
     {
         return $this->hasMany(Deposit::class);
+    }
+
+    public function supplier()
+    {
+        return $this->hasOne(Supplier::class);
     }
 }
