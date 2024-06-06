@@ -37,9 +37,7 @@ class AdjustmentFactory extends Factory
                 ]);
             });
 
-            $warehouseProducts = Warehouse::with(['products'])->where('id', $adjustment->warehouse_id)->first()->products;
-
-            $adjustmentItems = $warehouseProducts->pluck('id')->map(function ($id) {
+            $adjustmentItems = $adjustment->warehouse->products->pluck('id')->map(function ($id) {
                 return [
                     'product_id' => $id,
                     'quantity' => rand(1, 10),
