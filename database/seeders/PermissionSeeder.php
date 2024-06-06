@@ -108,6 +108,12 @@ class PermissionSeeder extends Seeder
             'adjustment-delete',
             'adjustment-restore',
             'adjustment-force-delete',
+            'supplier-list',
+            'supplier-create',
+            'supplier-edit',
+            'supplier-delete',
+            'supplier-restore',
+            'supplier-force-delete',
         ];
 
         foreach ($permissions as $permission) {
@@ -130,6 +136,15 @@ class PermissionSeeder extends Seeder
                 'name' => 'Rakibul Haider',
                 'password' => Hash::make('password'),
             ],
+        );
+
+        $role = Role::updateOrCreate(
+            ['name' => 'Supplier'],
+            [
+                'guard_name' => 'web',
+                'created_at' => now(),
+                'updated_at' => now(),
+            ]
         );
 
         $role = Role::updateOrCreate(
