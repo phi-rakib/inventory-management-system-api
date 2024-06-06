@@ -113,23 +113,27 @@ class AdjustmentService
 
     public function destroy($adjustment)
     {
-        $warehouseId = $adjustment->warehouse_id;
+        DB::transaction(function () use ($adjustment) {
+            $warehouseProducts = $adjustment->warehouse()->with(['products:id'])->first()->toArray();
 
-        foreach ($adjustment->products as $item) {
-            Product::find($item->pivot->product_id)
-                ->warehouses()
-                ->updateExistingPivot($warehouseId, [
-                    'quantity' => Product::find($item->pivot->product_id)
-                        ->warehouses()
-                        ->where('warehouse_id', $warehouseId)
-                        ->first()
-                        ->pivot
-                        ->quantity + ($item->pivot->type == 'addition' ? (-1) * $item->pivot->quantity : $item->pivot->quantity),
-                ]);
-        }
+            $warehouseProducts = array_column($warehouseProducts['products'], 'pivot', 'id');
 
-        $adjustment->products()->detach();
+            $adjustedProducts = $adjustment->products->pluck('pivot', 'id')->toArray();
 
-        $adjustment->delete();
+            $update = [];
+            foreach ($adjustedProducts as $productId => $product) {
+                $updatedQuantity = $product['type'] == 'subtraction' ? $product['quantity'] : (-1) * $product['quantity'];
+                $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
+            }
+
+            // update product_warehouse
+            Warehouse::find($adjustment->warehouse_id)->products()->sync($update);
+
+            // delete adjustment_product
+            $adjustment->products()->detach();
+
+            // delete adjustment
+            $adjustment->delete();
+        });
     }
 }
