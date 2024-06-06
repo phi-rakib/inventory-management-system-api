@@ -30,13 +30,15 @@ class AdjustmentTest extends TestCase
         $products = Product::factory(10)->create();
         $warehouse = Warehouse::factory()->create();
 
-        $products->each(function ($product) use ($warehouse) {
-            $product->warehouses()->attach($warehouse->id, [
-                'quantity' => rand(10, 20),
-            ]);
-        });
+        $warehouse->products()->attach($products->mapWithKeys(function ($product) use ($warehouse) {
+            return [
+                $product->id => [
+                    'quantity' => rand(10, 20),
+                ],
+            ];
+        }));
 
-        $adjustmentItems = $products->pluck('id')->map(function ($id) {
+        $adjustmentItems = $warehouse->products->pluck('id')->map(function ($id) {
             return [
                 'product_id' => $id,
                 'quantity' => rand(1, 5),
@@ -44,10 +46,9 @@ class AdjustmentTest extends TestCase
             ];
         });
 
-        $productsWithNewQuantity = [];
-        foreach ($adjustmentItems as $item) {
-            $productsWithNewQuantity[$item['product_id']] = ($item['type'] == 'addition' ? $item['quantity'] : $item['quantity'] * -1);
-        }
+        $productsWithNewQuantity = $adjustmentItems->mapWithKeys(
+            fn($item) => [$item['product_id'] => ($item['type'] == 'addition' ? $item['quantity'] : $item['quantity'] * -1)]
+        );
 
         $data = [
             'warehouse_id' => $warehouse->id,
@@ -168,11 +169,7 @@ class AdjustmentTest extends TestCase
 
         $adjustment = Adjustment::factory()->create();
 
-        $products = $adjustment->products()->get();
-
-        $items = $products->random(3);
-
-        $adjustmentItems = $items->pluck('id')->map(function ($id) {
+        $adjustmentItems = $adjustment->products()->inRandomOrder()->limit(3)->pluck('product_id')->map(function ($id) {
             return [
                 'product_id' => $id,
                 'quantity' => rand(1, 10),
