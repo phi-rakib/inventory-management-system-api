@@ -36,8 +36,6 @@ class AdjustmentTest extends TestCase
             ]);
         });
 
-        $warehouseProducts = Warehouse::with(['products'])->where('id', $warehouse->id)->first()->products;
-
         $adjustmentItems = $products->pluck('id')->map(function ($id) {
             return [
                 'product_id' => $id,
@@ -62,7 +60,7 @@ class AdjustmentTest extends TestCase
 
         $response->assertStatus(201);
 
-        foreach ($warehouseProducts as $warehouseProduct) {
+        foreach ($warehouse->products as $warehouseProduct) {
             $this->assertDatabaseHas('product_warehouse', [
                 'warehouse_id' => $warehouseProduct->pivot->warehouse_id,
                 'product_id' => $warehouseProduct->pivot->product_id,
