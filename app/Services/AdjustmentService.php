@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Adjustment;
 use App\Models\Product;
+use App\Models\Warehouse;
 use Illuminate\Support\Facades\DB;
 
 class AdjustmentService
@@ -21,26 +22,18 @@ class AdjustmentService
             $adjustments = $request->input('adjustment_items');
 
             // update product_warehouse
-            foreach ($adjustments as $adjustment) {
-                Product::find($adjustment['product_id'])
-                    ->warehouses()
-                    ->updateExistingPivot($warehouseId, [
-                        'quantity' => Product::find($adjustment['product_id'])
-                            ->warehouses()
-                            ->where('warehouse_id', $warehouseId)
-                            ->first()
-                            ->pivot
-                            ->quantity + ($adjustment['type'] == 'addition' ? $adjustment['quantity'] : (-1) * $adjustment['quantity']),
-                    ]);
-            }
+            $productIds = array_column($adjustments, 'product_id'); 
+            $products = Warehouse::find($warehouseId)->products()->whereIn('product_id', $productIds)->get();
 
-            $items = [];
+            $updates = [];
             foreach ($adjustments as $adjustment) {
-                $items[$adjustment['product_id']] = [
-                    'quantity' => $adjustment['quantity'],
-                    'type' => $adjustment['type'],
-                ];
+                $product = $products->where('id', $adjustment['product_id'])->first();
+                if ($product) {
+                    $quantityChange = $adjustment['type'] == 'addition' ? $adjustment['quantity'] : -1 * $adjustment['quantity'];
+                    $updates[$product->id] = ['quantity' => $product->pivot->quantity + $quantityChange];
+                }
             }
+            Warehouse::find($warehouseId)->products()->sync($updates);
 
             // create adjustment
             $adjustment = Adjustment::create([
@@ -50,7 +43,7 @@ class AdjustmentService
             ]);
 
             // create adjustment_product
-            $adjustment->products()->attach($items);
+            $adjustment->products()->attach(array_column($adjustments, null, 'product_id'));
         });
 
     }
