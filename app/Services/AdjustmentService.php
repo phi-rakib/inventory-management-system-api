@@ -14,12 +14,14 @@ class AdjustmentService
         //
     }
 
-    public function store($request)
+    public function store($data)
     {
-        DB::transaction(function () use ($request) {
+        DB::transaction(function () use ($data) {
 
-            $warehouseId = $request->input('warehouse_id');
-            $adjustments = $request->input('adjustment_items');
+            $warehouseId = $data['warehouse_id'];
+            $adjustments = $data['adjustment_items'];
+            $reason = $data['reason'];
+            $adjustmentDate = $data['adjustment_date'];
 
             // update product_warehouse
             $productIds = array_column($adjustments, 'product_id'); 
@@ -38,8 +40,8 @@ class AdjustmentService
             // create adjustment
             $adjustment = Adjustment::create([
                 'warehouse_id' => $warehouseId,
-                'reason' => $request->input('reason'),
-                'adjustment_date' => $request->input('adjustment_date'),
+                'reason' => $reason,
+                'adjustment_date' => $adjustmentDate,
             ]);
 
             // create adjustment_product

@@ -32,7 +32,7 @@ class AdjustmentController extends Controller
     {
         Gate::authorize('create', Adjustment::class);
 
-        $this->adjustmentService->store($request);
+        $this->adjustmentService->store($request->validated());
 
         return response()->json(['message' => 'Adjustment created successfully'], 201);
     }
