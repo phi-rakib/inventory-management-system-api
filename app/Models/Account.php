@@ -44,4 +44,9 @@ class Account extends Model
     {
         return $this->hasOne(Supplier::class);
     }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
+    }
 }
