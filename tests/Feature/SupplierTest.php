@@ -92,13 +92,18 @@ class SupplierTest extends TestCase
             'phone' => $supplier->phone,
         ]);
 
-        $this->assertDatabaseCount('accounts', 1);
+        $supplier = Supplier::with('user')->where('email', $supplier->email)->first();
+
+        $this->assertDatabaseHas('accounts', [
+            'name' => $supplier->name,
+            'user_id' => $supplier->user_id,
+        ]);
 
         $this->assertDatabaseHas('users', [
             'email' => $supplier->email,
+            'id' => $supplier->user_id,
         ]);
 
-        $supplier = Supplier::with('user')->where('email', $supplier->email)->first();
         $roles = $supplier->user->getRoleNames();
         $this->assertContains('Supplier', $roles);
     }

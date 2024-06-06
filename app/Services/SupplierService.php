@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Models\Account;
 use App\Models\Supplier;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +15,7 @@ class SupplierService
 
             $user = $this->createUser($validatedData);
 
-            $account = $this->createAccount($validatedData);
+            $account = $this->createAccount($validatedData, $user);
 
             $this->createSupplier($validatedData, $user, $account);
         });
@@ -35,26 +34,25 @@ class SupplierService
         return $user;
     }
 
-    private function createAccount($validatedData)
+    private function createAccount($validatedData, $user)
     {
-        $account = Account::create([
+        $account = $user->account()->create([
             'name' => $validatedData['name'],
             'account_number' => $validatedData['account_number'] ?? $validatedData['name'].'0001',
             'balance' => 0,
         ]);
 
         return $account;
-    } 
-    
+    }
+
     private function createSupplier($validatedData, $user, $account)
     {
-        $supplier = Supplier::create([
+        $supplier = $account->supplier()->create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'description' => $validatedData['description'],
             'address' => $validatedData['address'],
             'phone' => $validatedData['phone'],
-            'account_id' => $account->id,
             'user_id' => $user->id,
         ]);
 
