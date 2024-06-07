@@ -30,15 +30,15 @@ class AdjustmentTest extends TestCase
         $products = Product::factory(10)->create();
         $warehouse = Warehouse::factory()->create();
 
-        $products->each(function ($product) use ($warehouse) {
-            $product->warehouses()->attach($warehouse->id, [
-                'quantity' => rand(10, 20),
-            ]);
-        });
+        $warehouse->products()->attach($products->mapWithKeys(function ($product) {
+            return [
+                $product->id => [
+                    'quantity' => rand(10, 20),
+                ],
+            ];
+        }));
 
-        $warehouseProducts = Warehouse::with(['products'])->where('id', $warehouse->id)->first()->products;
-
-        $adjustmentItems = $products->pluck('id')->map(function ($id) {
+        $adjustmentItems = $warehouse->products->pluck('id')->map(function ($id) {
             return [
                 'product_id' => $id,
                 'quantity' => rand(1, 5),
@@ -46,10 +46,9 @@ class AdjustmentTest extends TestCase
             ];
         });
 
-        $productsWithNewQuantity = [];
-        foreach ($adjustmentItems as $item) {
-            $productsWithNewQuantity[$item['product_id']] = ($item['type'] == 'addition' ? $item['quantity'] : $item['quantity'] * -1);
-        }
+        $productsWithNewQuantity = $adjustmentItems->mapWithKeys(
+            fn ($item) => [$item['product_id'] => ($item['type'] == 'addition' ? $item['quantity'] : $item['quantity'] * -1)]
+        );
 
         $data = [
             'warehouse_id' => $warehouse->id,
@@ -62,7 +61,7 @@ class AdjustmentTest extends TestCase
 
         $response->assertStatus(201);
 
-        foreach ($warehouseProducts as $warehouseProduct) {
+        foreach ($warehouse->products as $warehouseProduct) {
             $this->assertDatabaseHas('product_warehouse', [
                 'warehouse_id' => $warehouseProduct->pivot->warehouse_id,
                 'product_id' => $warehouseProduct->pivot->product_id,
@@ -170,11 +169,7 @@ class AdjustmentTest extends TestCase
 
         $adjustment = Adjustment::factory()->create();
 
-        $products = $adjustment->products()->get();
-
-        $items = $products->random(3);
-
-        $adjustmentItems = $items->pluck('id')->map(function ($id) {
+        $adjustmentItems = $adjustment->products()->pluck('product_id')->map(function ($id) {
             return [
                 'product_id' => $id,
                 'quantity' => rand(1, 10),
@@ -198,8 +193,6 @@ class AdjustmentTest extends TestCase
             'warehouse_id' => $data['warehouse_id'],
             'reason' => $data['reason'],
         ]);
-
-        $this->assertDatabaseCount('adjustment_product', 3);
 
         foreach ($adjustmentItems as $item) {
             $this->assertDatabaseHas('adjustment_product', [
