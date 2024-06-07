@@ -2,7 +2,6 @@
 
 namespace App\Service;
 
-use App\Models\Price;
 use App\Models\Product;
 use Illuminate\Support\Facades\DB;
 
@@ -29,7 +28,7 @@ class ProductService
             $latestPrice = $product->latestPrice;
 
             if ($latestPrice == null || $latestPrice->price != $data['price']) {
-                Price::create([
+                $product->prices()->create([
                     'product_id' => $product->id,
                     'price' => $data['price'],
                 ]);
