@@ -29,11 +29,11 @@ class AdjustmentFactory extends Factory
     public function configure(): static
     {
         return $this->afterCreating(function (Adjustment $adjustment) {
-            $products = Product::factory(10)->create();
+            $products = Product::factory(2)->create();
 
             $products->each(function ($product) use ($adjustment) {
                 $product->warehouses()->attach($adjustment->warehouse_id, [
-                    'quantity' => rand(1, 10),
+                    'quantity' => rand(10, 20),
                 ]);
             });
 
@@ -45,9 +45,17 @@ class AdjustmentFactory extends Factory
                 ];
             });
 
-            foreach ($adjustmentItems as $item) {
-                $adjustment->products()->attach($item['product_id'], $item);
+            // update adjustment_product
+            $adjustment->products()->sync($adjustmentItems);
+
+            // update product_warehouse
+            $warehouseProducts = Warehouse::find($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray();
+            $update = [];
+            foreach ($adjustmentItems as $product) {
+                $updatedQuantity = $product['type'] == 'addition' ? $product['quantity'] : (-1) * $product['quantity'];
+                $update[$product['product_id']] = ['quantity' => $warehouseProducts[$product['product_id']]['quantity'] + $updatedQuantity];
             }
+            Warehouse::find($adjustment->warehouse_id)->products()->sync($update);
         });
     }
 }

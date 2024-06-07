@@ -6,6 +6,7 @@ use App\Models\Adjustment;
 use App\Models\Product;
 use App\Models\Warehouse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class AdjustmentService
 {
@@ -57,57 +58,53 @@ class AdjustmentService
     public function update($request, $adjustment)
     {
         DB::transaction(function () use ($adjustment, $request) {
-
-            $warehouseId = $request->input('warehouse_id');
             $adjustments = $request->input('adjustment_items');
             $reason = $request->input('reason');
             $adjustment_date = $request->input('adjustment_date');
 
-            $adjustmentProductItems = [];
-            foreach ($adjustments as $item) {
-                $adjustmentProductItems[$item['product_id']] = [
-                    'quantity' => $item['quantity'],
-                    'type' => $item['type'],
-                ];
-            }
+            // product_warehouse back to previous state
+            $adjustedProducts = $adjustment->products->pluck('pivot', 'id')->toArray();
+            $warehouseProducts = Warehouse::find($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray();
+            Log::debug('previous adjustment');
+            Log::debug($adjustedProducts);
+            Log::debug('warehouse products');
+            Log::debug($warehouseProducts);
 
-            //update adjustment
-            $adjustment->update([
-                'warehouse_id' => $warehouseId,
-                'reason' => $reason,
-                'adjustment_date' => $adjustment_date,
-            ]);
-
-            // update product_warehouse(rollback to previous state)
-            foreach ($adjustment->products as $item) {
-                Product::find($item->pivot->product_id)
-                    ->warehouses()
-                    ->updateExistingPivot($warehouseId, [
-                        'quantity' => Product::find($item->pivot->product_id)
-                            ->warehouses()
-                            ->where('warehouse_id', $warehouseId)
-                            ->first()
-                            ->pivot
-                            ->quantity + ($item->pivot->type == 'addition' ? (-1) * $item->pivot->quantity : $item->pivot->quantity),
-                    ]);
+            $update = [];
+            foreach ($adjustedProducts as $productId => $product) {
+                $updatedQuantity = $product['type'] == 'addition' ? (-1) * $product['quantity'] : $product['quantity'];
+                $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
             }
+            Warehouse::find($adjustment->warehouse_id)->products()->sync($update);
 
             // update product_warehouse
-            foreach ($adjustments as $item) {
-                Product::find($item['product_id'])
-                    ->warehouses()
-                    ->updateExistingPivot($warehouseId, [
-                        'quantity' => Product::find($item['product_id'])
-                            ->warehouses()
-                            ->where('warehouse_id', $warehouseId)
-                            ->first()
-                            ->pivot
-                            ->quantity + ($item['type'] == 'addition' ? $item['quantity'] : (-1) * $item['quantity']),
-                    ]);
+            $warehouseProducts = Warehouse::find($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray();
+
+            Log::debug('previous warehouse products');
+            Log::debug($warehouseProducts);
+
+            Log::debug('adjustment products');
+            Log::debug($adjustments);
+
+            $update = [];
+            foreach ($adjustments as $product) {
+                $productId = $product['product_id'];
+                $updatedQuantity = $product['type'] == 'addition' ? $product['quantity'] : (-1) * $product['quantity'];
+                $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
             }
+            Warehouse::find($adjustment->warehouse_id)->products()->sync($update);
+
+            Log::debug('new warehouse products');
+            Log::debug(Warehouse::find($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray());
 
             // update adjustment_product
-            $adjustment->products()->sync($adjustmentProductItems);
+            $adjustment->products()->sync(array_column($adjustments, null, 'product_id'));
+
+            // update adjustment
+            $adjustment->update([
+                'adjustment_date' => $adjustment_date,
+                'reason' => $reason,
+            ]);
         });
     }
 
