@@ -29,7 +29,6 @@ class ProductService
 
             if ($latestPrice == null || $latestPrice->price != $data['price']) {
                 $product->prices()->create([
-                    'product_id' => $product->id,
                     'price' => $data['price'],
                 ]);
             }
