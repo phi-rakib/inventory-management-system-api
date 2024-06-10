@@ -111,6 +111,12 @@ class AdjustmentTest extends TestCase
                             ],
                         ],
                     ],
+                    'creator' => [
+                        'id',
+                        'name',
+                    ],
+                    'created_at',
+                    'updated_at',
                 ],
             ],
         ]);
@@ -147,6 +153,12 @@ class AdjustmentTest extends TestCase
                     ],
                 ],
             ],
+            'creator' => [
+                'id',
+                'name',
+            ],
+            'created_at',
+            'updated_at',
         ]);
 
         foreach ($adjustmentItems as $item) {

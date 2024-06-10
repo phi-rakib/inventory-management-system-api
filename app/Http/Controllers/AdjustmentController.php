@@ -17,15 +17,15 @@ class AdjustmentController extends Controller
     public function index()
     {
         Gate::authorize('viewAny', Adjustment::class);
-
-        return Adjustment::latest()->with(['warehouse', 'products'])->paginate(20);
+        
+        return Adjustment::latest()->with(['warehouse', 'products', 'creator', 'updater'])->paginate(20);
     }
 
     public function show(Adjustment $adjustment)
     {
         Gate::authorize('view', $adjustment);
 
-        return $adjustment->load(['warehouse', 'products']);
+        return $adjustment->load(['warehouse', 'products', 'creator', 'updater']);
     }
 
     public function store(StoreAdjustmentRequest $request)
