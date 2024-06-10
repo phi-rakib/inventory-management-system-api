@@ -2,12 +2,13 @@
 
 namespace App\Models;
 
+use App\Traits\HasCommon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Adjustment extends Model
 {
-    use HasFactory;
+    use HasCommon, HasFactory;
 
     protected $fillable = [
         'warehouse_id',
@@ -17,7 +18,7 @@ class Adjustment extends Model
 
     public function warehouse()
     {
-        return $this->belongsTo(Warehouse::class);
+        return $this->belongsTo(Warehouse::class)->select(['id', 'name']);
     }
 
     public function products()

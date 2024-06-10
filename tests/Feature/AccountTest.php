@@ -83,6 +83,28 @@ class AccountTest extends TestCase
 
         $response->assertStatus(200);
 
+        $response->assertJsonStructure([
+            'id',
+            'name',
+            'account_number',
+            'balance',
+            'creator' => [
+                'id',
+                'name',
+            ],
+            'updater' => [
+                'id',
+                'name',
+            ],
+            'deleter' => [
+                'id',
+                'name',
+            ],
+            'created_at',
+            'updated_at',
+            'deleted_at',
+        ]);
+
         $response->assertJson([
             'id' => $account->id,
             'name' => $account->name,
@@ -100,5 +122,31 @@ class AccountTest extends TestCase
         $response->assertStatus(200);
 
         $response->assertJsonCount(10, 'data');
+
+        $response->assertJsonStructure([
+            'data' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'account_number',
+                    'balance',
+                    'creator' => [
+                        'id',
+                        'name',
+                    ],
+                    'updater' => [
+                        'id',
+                        'name',
+                    ],
+                    'deleter' => [
+                        'id',
+                        'name',
+                    ],
+                    'created_at',
+                    'updated_at',
+                    'deleted_at',
+                ],
+            ],
+        ]);
     }
 }

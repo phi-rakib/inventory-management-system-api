@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasCommon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Account extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasCommon, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -16,24 +17,6 @@ class Account extends Model
         'balance',
         'description',
     ];
-
-    public function createdBy()
-    {
-        return $this->belongsTo(User::class, 'created_by')
-            ->select(['id', 'name']);
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo(User::class, 'updated_by')
-            ->select(['id', 'name']);
-    }
-
-    public function deletedBy()
-    {
-        return $this->belongsTo(User::class, 'deleted_by')
-            ->select(['id', 'name']);
-    }
 
     public function deposits()
     {

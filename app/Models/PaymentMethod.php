@@ -2,13 +2,14 @@
 
 namespace App\Models;
 
+use App\Traits\HasCommon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class PaymentMethod extends Model
 {
-    use HasFactory, SoftDeletes;
+    use HasCommon, HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
@@ -17,20 +18,5 @@ class PaymentMethod extends Model
     public function deposits()
     {
         return $this->hasMany(Deposit::class);
-    }
-
-    public function createdBy()
-    {
-        return $this->belongsTo(User::class, 'created_by');
-    }
-
-    public function updatedBy()
-    {
-        return $this->belongsTo(User::class, 'updated_by');
-    }
-
-    public function deletedBy()
-    {
-        return $this->belongsTo(User::class, 'deleted_by');
     }
 }
