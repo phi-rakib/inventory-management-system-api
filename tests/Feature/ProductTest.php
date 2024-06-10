@@ -27,12 +27,7 @@ class ProductTest extends TestCase
     {
         $this->user->givePermissionTo('product-list');
 
-        $products = Product::factory(10)->create();
-        $warehouses = Warehouse::factory(3)->create();
-
-        $products->each(function ($product) use ($warehouses) {
-            $product->warehouses()->attach($warehouses->random(1)->pluck('id'));
-        });
+        Warehouse::factory()->has(Product::factory()->count(10)->hasAttributes(3)->hasPrices(1))->create();
 
         $response = $this->get(route('products.index'));
 
@@ -79,15 +74,7 @@ class ProductTest extends TestCase
     {
         $this->user->givePermissionTo('product-list');
 
-        $product = Product::factory()->create();
-        $attributes = Attribute::factory(10)->create();
-        $randomAttributes = $attributes->random(3)->pluck('id')->toArray();
-
-        $product->attributes()->attach($randomAttributes);
-
-        $product->prices()->create([
-            'price' => $price = rand(100, 1000),
-        ]);
+        $product = Product::factory()->hasAttributes(10)->hasPrices(1)->create();
 
         $response = $this->get(route('products.show', $product));
 
@@ -182,17 +169,10 @@ class ProductTest extends TestCase
     {
         $this->user->givePermissionTo('product-edit');
 
-        $product = Product::factory()->create();
-        $attributes = Attribute::factory(10)->create();
-        $randomAttributes = $attributes->random(3)->pluck('id')->toArray();
+        $product = Product::factory()->hasAttributes(10)->hasPrices(1)->create();
 
-        $product->attributes()->attach($randomAttributes);
+        $newRandomAttributes = $product->attributes->random(5)->pluck('id')->toArray();
 
-        $product->prices()->create([
-            'price' => rand(100, 1000),
-        ]);
-
-        $newRandomAttributes = $attributes->random(5)->pluck('id')->toArray();
         $data = [
             'price' => $newPrice = rand(100, 1000),
             'name' => 'updated name',
@@ -231,15 +211,7 @@ class ProductTest extends TestCase
     {
         $this->user->givePermissionTo('product-delete');
 
-        $product = Product::factory()->create();
-        $attributes = Attribute::factory(10)->create();
-        $randomAttributes = $attributes->random(3)->pluck('id')->toArray();
-
-        $product->attributes()->attach($randomAttributes);
-
-        $product->prices()->create([
-            'price' => $price = rand(100, 1000),
-        ]);
+        $product = Product::factory()->hasAttributes(10)->hasPrices(1)->create();
 
         $this->delete(route('products.destroy', $product->id))
             ->assertNoContent();
@@ -249,17 +221,19 @@ class ProductTest extends TestCase
             'deleted_by' => $this->user->id,
         ]);
 
+        $productAttributes = $product->attributes->pluck('pivot');
+
         $this->assertDatabaseHas('prices', [
-            'price' => $price,
+            'price' => $product->latestPrice()->pluck('price'),
             'product_id' => $product->id,
         ]);
 
-        $this->assertDatabaseCount('attribute_product', count($randomAttributes));
+        $this->assertDatabaseCount('attribute_product', $productAttributes->count());
 
-        foreach ($randomAttributes as $attribute) {
+        foreach ($productAttributes as $attribute) {
             $this->assertDatabaseHas('attribute_product', [
                 'product_id' => $product->id,
-                'attribute_id' => $attribute,
+                'attribute_id' => $attribute->attribute_id,
             ]);
         }
     }

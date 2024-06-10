@@ -29,15 +29,14 @@ class AdjustmentFactory extends Factory
     public function configure(): static
     {
         return $this->afterCreating(function (Adjustment $adjustment) {
-            $products = Product::factory(2)->create();
+            $warehouse = Warehouse::factory()
+                ->hasAttached(Product::factory()->count(10), [
+                    'quantity' => rand(10, 50),
+                ])->create();
 
-            $products->each(function ($product) use ($adjustment) {
-                $product->warehouses()->attach($adjustment->warehouse_id, [
-                    'quantity' => rand(10, 20),
-                ]);
-            });
+            $warehouseProducts = $warehouse->products->pluck('pivot');
 
-            $adjustmentItems = $adjustment->warehouse->products->pluck('id')->map(function ($id) {
+            $adjustmentItems = $warehouseProducts->pluck('product_id')->map(function ($id) {
                 return [
                     'product_id' => $id,
                     'quantity' => rand(1, 10),
@@ -49,7 +48,7 @@ class AdjustmentFactory extends Factory
             $adjustment->products()->sync($adjustmentItems);
 
             // update product_warehouse
-            $warehouseProducts = Warehouse::find($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray();
+            $warehouseProducts = array_column($warehouseProducts->toArray(), null, 'product_id');
             $update = [];
             foreach ($adjustmentItems as $product) {
                 $updatedQuantity = $product['type'] == 'addition' ? $product['quantity'] : (-1) * $product['quantity'];

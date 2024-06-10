@@ -25,6 +25,8 @@ class SupplierTest extends TestCase
     {
         $this->user->givePermissionTo('supplier-list');
 
+        Supplier::factory(10)->create();
+
         $response = $this->get(route('suppliers.index'));
 
         $response->assertOk();
