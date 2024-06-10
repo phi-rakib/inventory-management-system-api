@@ -17,7 +17,7 @@ class AdjustmentController extends Controller
     public function index()
     {
         Gate::authorize('viewAny', Adjustment::class);
-        
+
         return Adjustment::latest()->with(['warehouse', 'products', 'creator', 'updater'])->paginate(20);
     }
 
