@@ -27,28 +27,20 @@ class AdjustmentTest extends TestCase
     {
         $this->user->givePermissionTo('adjustment-create');
 
-        $products = Product::factory(10)->create();
-        $warehouse = Warehouse::factory()->create();
+        $warehouse = Warehouse::factory()
+            ->hasAttached(Product::factory()->count(2), [
+                'quantity' => rand(10, 50),
+            ])->create();
 
-        $warehouse->products()->attach($products->mapWithKeys(function ($product) {
-            return [
-                $product->id => [
-                    'quantity' => rand(10, 20),
-                ],
-            ];
-        }));
+        $warehouseProducts = $warehouse->products->pluck('pivot');
 
-        $adjustmentItems = $warehouse->products->pluck('id')->map(function ($id) {
+        $adjustmentItems = $warehouseProducts->pluck('product_id')->map(function ($id) {
             return [
                 'product_id' => $id,
                 'quantity' => rand(1, 5),
                 'type' => rand(0, 1) ? 'addition' : 'subtraction',
             ];
         });
-
-        $productsWithNewQuantity = $adjustmentItems->mapWithKeys(
-            fn ($item) => [$item['product_id'] => ($item['type'] == 'addition' ? $item['quantity'] : $item['quantity'] * -1)]
-        );
 
         $data = [
             'warehouse_id' => $warehouse->id,
@@ -61,11 +53,15 @@ class AdjustmentTest extends TestCase
 
         $response->assertStatus(201);
 
-        foreach ($warehouse->products as $warehouseProduct) {
+        $productsWithNewQuantity = $adjustmentItems->mapWithKeys(
+            fn ($item) => [$item['product_id'] => ($item['type'] == 'addition' ? $item['quantity'] : $item['quantity'] * -1)]
+        );
+
+        foreach ($warehouseProducts as $warehouseProduct) {
             $this->assertDatabaseHas('product_warehouse', [
-                'warehouse_id' => $warehouseProduct->pivot->warehouse_id,
-                'product_id' => $warehouseProduct->pivot->product_id,
-                'quantity' => $warehouseProduct->pivot->quantity + $productsWithNewQuantity[$warehouseProduct->pivot->product_id],
+                'warehouse_id' => $warehouseProduct->warehouse_id,
+                'product_id' => $warehouseProduct->product_id,
+                'quantity' => $warehouseProduct->quantity + $productsWithNewQuantity[$warehouseProduct->product_id],
             ]);
         }
 
@@ -169,7 +165,7 @@ class AdjustmentTest extends TestCase
 
         $adjustment = Adjustment::factory()->create();
 
-        $adjustmentItems = $adjustment->products()->pluck('product_id')->map(function ($id) {
+        $adjustmentItems = $adjustment->products->pluck('pivot.product_id')->map(function ($id) {
             return [
                 'product_id' => $id,
                 'quantity' => rand(1, 10),
