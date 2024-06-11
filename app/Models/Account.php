@@ -5,6 +5,9 @@ namespace App\Models;
 use App\Traits\HasCommon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Account extends Model
@@ -18,17 +21,17 @@ class Account extends Model
         'description',
     ];
 
-    public function deposits()
+    public function deposits(): HasMany
     {
         return $this->hasMany(Deposit::class);
     }
 
-    public function supplier()
+    public function supplier(): HasOne
     {
         return $this->hasOne(Supplier::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

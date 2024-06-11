@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasCommon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class AttributeValue extends Model
@@ -17,7 +18,7 @@ class AttributeValue extends Model
         'attribute_id',
     ];
 
-    public function attribute()
+    public function attribute(): BelongsTo
     {
         return $this->belongsTo(Attribute::class)->select(['id', 'name']);
     }

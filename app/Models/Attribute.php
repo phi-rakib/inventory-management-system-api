@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasCommon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Attribute extends Model
@@ -16,7 +17,7 @@ class Attribute extends Model
         'description',
     ];
 
-    public function attributeValues()
+    public function attributeValues(): HasMany
     {
         return $this->hasMany(AttributeValue::class)->select(['id', 'name']);
     }

@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasCommon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Expense extends Model
@@ -21,23 +22,18 @@ class Expense extends Model
         'description',
     ];
 
-    public function expenseCategory()
+    public function expenseCategory(): BelongsTo
     {
         return $this->belongsTo(ExpenseCategory::class)->select(['id', 'name']);
     }
 
-    public function account()
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class)->select(['id', 'name', 'balance']);
     }
 
-    public function paymentMethod()
+    public function paymentMethod(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class)->select(['id', 'name']);
-    }
-
-    public function creator()
-    {
-        return $this->belongsTo(User::class, 'created_by')->select(['id', 'name']);
     }
 }

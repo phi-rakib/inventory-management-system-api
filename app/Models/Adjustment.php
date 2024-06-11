@@ -5,6 +5,8 @@ namespace App\Models;
 use App\Traits\HasCommon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Adjustment extends Model
 {
@@ -16,12 +18,12 @@ class Adjustment extends Model
         'reason',
     ];
 
-    public function warehouse()
+    public function warehouse(): BelongsTo
     {
         return $this->belongsTo(Warehouse::class)->select(['id', 'name']);
     }
 
-    public function products()
+    public function products(): BelongsToMany
     {
         return $this->belongsToMany(Product::class, 'adjustment_product', 'adjustment_id', 'product_id')->withPivot(['quantity', 'type']);
     }
