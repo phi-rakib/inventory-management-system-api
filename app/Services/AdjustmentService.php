@@ -28,7 +28,7 @@ class AdjustmentService
 
             // update product_warehouse
             $productIds = array_column($adjustments, 'product_id');
-            $products = Warehouse::find($warehouseId)
+            $products = Warehouse::findOrFail($warehouseId)
                 ->products()
                 ->whereIn('product_id', $productIds)
                 ->get(['product_id'])
@@ -42,7 +42,7 @@ class AdjustmentService
                     $updates[$product['product_id']] = ['quantity' => $product['quantity'] + $quantityChange];
                 }
             }
-            Warehouse::find($warehouseId)->products()->sync($updates);
+            Warehouse::findOrFail($warehouseId)->products()->sync($updates);
 
             // create adjustment
             $adjustment = Adjustment::create([
@@ -66,17 +66,17 @@ class AdjustmentService
 
             // product_warehouse back to previous state
             $adjustedProducts = $adjustment->products->pluck('pivot', 'id')->toArray();
-            $warehouseProducts = Warehouse::find($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray();
+            $warehouseProducts = Warehouse::findOrFail($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray();
 
             $update = [];
             foreach ($adjustedProducts as $productId => $product) {
                 $updatedQuantity = $product['type'] == 'addition' ? (-1) * $product['quantity'] : $product['quantity'];
                 $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
             }
-            Warehouse::find($adjustment->warehouse_id)->products()->sync($update);
+            Warehouse::findOrFail($adjustment->warehouse_id)->products()->sync($update);
 
             // update product_warehouse
-            $warehouseProducts = Warehouse::find($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray();
+            $warehouseProducts = Warehouse::findOrFail($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray();
 
             $update = [];
             foreach ($adjustments as $product) {
@@ -84,7 +84,7 @@ class AdjustmentService
                 $updatedQuantity = $product['type'] == 'addition' ? $product['quantity'] : (-1) * $product['quantity'];
                 $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
             }
-            Warehouse::find($adjustment->warehouse_id)->products()->sync($update);
+            Warehouse::findOrFail($adjustment->warehouse_id)->products()->sync($update);
 
             // update adjustment_product
             $adjustment->products()->sync(array_column($adjustments, null, 'product_id'));
@@ -100,7 +100,7 @@ class AdjustmentService
     public function destroy(Adjustment $adjustment): void
     {
         DB::transaction(function () use ($adjustment) {
-            $warehouseProducts = $adjustment->warehouse()->with(['products:id'])->first()->toArray();
+            $warehouseProducts = $adjustment->warehouse()->with(['products:id'])->firstOrFail()->toArray();
 
             $warehouseProducts = array_column($warehouseProducts['products'], 'pivot', 'id');
 
@@ -113,7 +113,7 @@ class AdjustmentService
             }
 
             // update product_warehouse
-            Warehouse::find($adjustment->warehouse_id)->products()->sync($update);
+            Warehouse::findOrFail($adjustment->warehouse_id)->products()->sync($update);
 
             // delete adjustment_product
             $adjustment->products()->detach();
