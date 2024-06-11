@@ -47,7 +47,7 @@ class ProductService
     public function destroy(Product $product): void
     {
         DB::transaction(function () use ($product) {
-            $product->deleted_by = auth()->id();
+            $product->deleted_by = (int) auth()->id();
             $product->save();
 
             $product->delete();
