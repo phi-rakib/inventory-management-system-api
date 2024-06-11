@@ -6,13 +6,13 @@ use App\Models\Warehouse;
 
 class WarehouseObserver
 {
-    public function creating(Warehouse $warehouse)
+    public function creating(Warehouse $warehouse): void
     {
         $warehouse->slug = str($warehouse->name)->slug()->toString();
         $warehouse->created_by = auth()->id();
     }
 
-    public function updating(Warehouse $warehouse)
+    public function updating(Warehouse $warehouse): void
     {
         $warehouse->slug = str($warehouse->name)->slug()->toString();
         $warehouse->updated_by = auth()->id();
