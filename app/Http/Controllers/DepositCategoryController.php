@@ -4,25 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\DepositCategoryRequest;
 use App\Models\DepositCategory;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class DepositCategoryController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', DepositCategory::class);
 
         return DepositCategory::latest()->paginate(20);
     }
 
-    public function show(DepositCategory $depositCategory)
+    public function show(DepositCategory $depositCategory): DepositCategory
     {
         Gate::authorize('view', $depositCategory);
 
         return $depositCategory;
     }
 
-    public function store(DepositCategoryRequest $request)
+    public function store(DepositCategoryRequest $request): JsonResponse
     {
         Gate::authorize('create', DepositCategory::class);
 
@@ -33,7 +35,7 @@ class DepositCategoryController extends Controller
         ], 201);
     }
 
-    public function update(DepositCategoryRequest $request, DepositCategory $depositCategory)
+    public function update(DepositCategoryRequest $request, DepositCategory $depositCategory): JsonResponse
     {
         Gate::authorize('update', $depositCategory);
 
@@ -44,7 +46,7 @@ class DepositCategoryController extends Controller
         ], 200);
     }
 
-    public function destroy(DepositCategory $depositCategory)
+    public function destroy(DepositCategory $depositCategory): JsonResponse
     {
         Gate::authorize('delete', $depositCategory);
 
@@ -58,7 +60,7 @@ class DepositCategoryController extends Controller
         ], 204);
     }
 
-    public function restore(DepositCategory $depositCategory)
+    public function restore(DepositCategory $depositCategory): JsonResponse
     {
         Gate::authorize('restore', $depositCategory);
 

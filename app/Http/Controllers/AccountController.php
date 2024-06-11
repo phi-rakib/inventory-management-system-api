@@ -4,26 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAccountRequest;
 use App\Models\Account;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class AccountController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Account::class);
 
         return Account::with(['creator', 'deleter', 'updater'])->latest()->paginate(20);
     }
 
-    public function show(Account $account)
+    public function show(Account $account): Account
     {
         Gate::authorize('view', $account);
 
         return $account->load(['creator', 'deleter', 'updater']);
     }
 
-    public function store(StoreAccountRequest $request)
+    public function store(StoreAccountRequest $request): JsonResponse
     {
         Gate::authorize('create', Account::class);
 
@@ -32,7 +34,7 @@ class AccountController extends Controller
         return response()->json(['message' => 'Account created successfully'], 201);
     }
 
-    public function update(Request $request, Account $account)
+    public function update(Request $request, Account $account): JsonResponse
     {
         Gate::authorize('update', $account);
 
@@ -41,7 +43,7 @@ class AccountController extends Controller
         return response()->json(['message' => 'Account updated successfully'], 200);
     }
 
-    public function destroy(Account $account)
+    public function destroy(Account $account): JsonResponse
     {
         Gate::authorize('delete', $account);
 
@@ -53,7 +55,7 @@ class AccountController extends Controller
         return response()->json(['message' => 'Account deleted successfully'], 204);
     }
 
-    public function restore(Account $account)
+    public function restore(Account $account): JsonResponse
     {
         Gate::authorize('restore', $account);
 

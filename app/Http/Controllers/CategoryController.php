@@ -4,26 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCategoryRequest;
 use App\Models\Category;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class CategoryController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Category::class);
 
         return Category::latest()->with(['creator'])->paginate(20);
     }
 
-    public function show(Category $category)
+    public function show(Category $category): Category
     {
         Gate::authorize('view', $category);
 
         return $category->load(['creator', 'updater', 'deleter']);
     }
 
-    public function store(StoreCategoryRequest $request)
+    public function store(StoreCategoryRequest $request): JsonResponse
     {
         Gate::authorize('create', Category::class);
 
@@ -32,7 +34,7 @@ class CategoryController extends Controller
         return response()->json(['message' => 'Category created successfully.'], 201);
     }
 
-    public function update(StoreCategoryRequest $request, Category $category)
+    public function update(StoreCategoryRequest $request, Category $category): JsonResponse
     {
         Gate::authorize('update', $category);
 
@@ -41,7 +43,7 @@ class CategoryController extends Controller
         return response()->json(['message' => 'Category updated successfully.']);
     }
 
-    public function destroy(Category $category)
+    public function destroy(Category $category): JsonResponse
     {
         Gate::authorize('delete', $category);
 

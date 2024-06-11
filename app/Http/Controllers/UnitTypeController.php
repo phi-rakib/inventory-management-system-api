@@ -4,26 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUnitTypeRequest;
 use App\Models\UnitType;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Gate;
 
 class UnitTypeController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', UnitType::class);
 
         return UnitType::latest()->with(['creator', 'updater', 'deleter'])->paginate(20);
     }
 
-    public function show(UnitType $unitType)
+    public function show(UnitType $unitType): UnitType
     {
         Gate::authorize('view', $unitType);
 
         return $unitType->load(['creator', 'updater', 'deleter']);
     }
 
-    public function store(StoreUnitTypeRequest $request)
+    public function store(StoreUnitTypeRequest $request): JsonResponse
     {
         Gate::authorize('create', UnitType::class);
 
@@ -32,7 +34,7 @@ class UnitTypeController extends Controller
         return response()->json(['message' => 'Unit type created successfully.'], 201);
     }
 
-    public function update(StoreUnitTypeRequest $request, UnitType $unitType)
+    public function update(StoreUnitTypeRequest $request, UnitType $unitType): JsonResponse
     {
         Gate::authorize('update', $unitType);
 
@@ -41,7 +43,7 @@ class UnitTypeController extends Controller
         return response()->json(['message' => 'Unit type updated successfully.']);
     }
 
-    public function destroy(UnitType $unitType)
+    public function destroy(UnitType $unitType): JsonResponse
     {
         Gate::authorize('delete', $unitType);
 

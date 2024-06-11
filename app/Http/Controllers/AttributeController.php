@@ -4,25 +4,27 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAttributeRequest;
 use App\Models\Attribute;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class AttributeController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Attribute::class);
 
         return Attribute::latest()->paginate(20);
     }
 
-    public function show(Attribute $attribute)
+    public function show(Attribute $attribute): Attribute
     {
         Gate::authorize('view', $attribute);
 
         return $attribute;
     }
 
-    public function store(StoreAttributeRequest $request)
+    public function store(StoreAttributeRequest $request): JsonResponse
     {
         Gate::authorize('create', Attribute::class);
 
@@ -31,7 +33,7 @@ class AttributeController extends Controller
         return response()->json(['message' => 'Attribute created successfully.'], 201);
     }
 
-    public function update(StoreAttributeRequest $request, Attribute $attribute)
+    public function update(StoreAttributeRequest $request, Attribute $attribute): JsonResponse
     {
         Gate::authorize('update', $attribute);
 
@@ -40,7 +42,7 @@ class AttributeController extends Controller
         return response()->json(['message' => 'Attribute updated successfully.']);
     }
 
-    public function destroy(Attribute $attribute)
+    public function destroy(Attribute $attribute): JsonResponse
     {
         Gate::authorize('delete', $attribute);
 

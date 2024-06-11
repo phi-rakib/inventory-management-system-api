@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreAdjustmentRequest;
 use App\Models\Adjustment;
 use App\Services\AdjustmentService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class AdjustmentController extends Controller
@@ -14,21 +16,21 @@ class AdjustmentController extends Controller
 
     }
 
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Adjustment::class);
 
         return Adjustment::latest()->with(['warehouse', 'products', 'creator', 'updater'])->paginate(20);
     }
 
-    public function show(Adjustment $adjustment)
+    public function show(Adjustment $adjustment): Adjustment
     {
         Gate::authorize('view', $adjustment);
 
         return $adjustment->load(['warehouse', 'products', 'creator', 'updater']);
     }
 
-    public function store(StoreAdjustmentRequest $request)
+    public function store(StoreAdjustmentRequest $request): JsonResponse
     {
         Gate::authorize('create', Adjustment::class);
 
@@ -37,7 +39,7 @@ class AdjustmentController extends Controller
         return response()->json(['message' => 'Adjustment created successfully'], 201);
     }
 
-    public function update(StoreAdjustmentRequest $request, Adjustment $adjustment)
+    public function update(StoreAdjustmentRequest $request, Adjustment $adjustment): JsonResponse
     {
         Gate::authorize('update', $adjustment);
 
@@ -46,7 +48,7 @@ class AdjustmentController extends Controller
         return response()->json(['message' => 'Adjustment updated successfully'], 200);
     }
 
-    public function destroy(Adjustment $adjustment)
+    public function destroy(Adjustment $adjustment): JsonResponse
     {
         Gate::authorize('delete', $adjustment);
 

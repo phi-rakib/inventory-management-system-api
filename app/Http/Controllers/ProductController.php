@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Models\Product;
 use App\Service\ProductService;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
@@ -14,21 +16,21 @@ class ProductController extends Controller
 
     }
 
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Product::class);
 
         return Product::latest()->with(['category', 'brand', 'unitType', 'warehouses', 'creator'])->paginate(20);
     }
 
-    public function show(Product $product)
+    public function show(Product $product): Product
     {
         Gate::authorize('view', $product);
 
         return $product->load(['category', 'brand', 'unitType', 'warehouses', 'creator', 'latestPrice', 'prices', 'attributes']);
     }
 
-    public function store(StoreProductRequest $request)
+    public function store(StoreProductRequest $request): JsonResponse
     {
         Gate::authorize('create', Product::class);
 
@@ -37,7 +39,7 @@ class ProductController extends Controller
         return response()->json(['message' => 'Product created successfully'], 201);
     }
 
-    public function update(StoreProductRequest $request, Product $product)
+    public function update(StoreProductRequest $request, Product $product): JsonResponse
     {
         Gate::authorize('update', $product);
 
@@ -46,7 +48,7 @@ class ProductController extends Controller
         return response()->json(['message' => 'Product updated successfully'], 200);
     }
 
-    public function destroy(Product $product)
+    public function destroy(Product $product): JsonResponse
     {
         Gate::authorize('delete', $product);
 
