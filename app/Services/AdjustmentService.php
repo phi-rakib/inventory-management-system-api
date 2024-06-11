@@ -4,6 +4,7 @@ namespace App\Services;
 
 use App\Models\Adjustment;
 use App\Models\Warehouse;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
 class AdjustmentService
@@ -13,7 +14,10 @@ class AdjustmentService
         //
     }
 
-    public function store($data): void
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    public function store(array $data): void
     {
         DB::transaction(function () use ($data) {
 
@@ -53,7 +57,7 @@ class AdjustmentService
 
     }
 
-    public function update($request, $adjustment): void
+    public function update(Request $request, Adjustment $adjustment): void
     {
         DB::transaction(function () use ($adjustment, $request) {
             $adjustments = $request->input('adjustment_items');
@@ -93,7 +97,7 @@ class AdjustmentService
         });
     }
 
-    public function destroy($adjustment): void
+    public function destroy(Adjustment $adjustment): void
     {
         DB::transaction(function () use ($adjustment) {
             $warehouseProducts = $adjustment->warehouse()->with(['products:id'])->first()->toArray();
