@@ -93,9 +93,7 @@ class SupplierService
 
     public function destroy(Supplier $supplier): void
     {
-        $supplier->account->status = 'inactive';
-        $supplier->account->save();
-
+        $supplier->account()->update(['status' => 'inactive']);
         $supplier->delete();
     }
 }
