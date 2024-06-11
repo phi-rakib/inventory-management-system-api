@@ -21,7 +21,7 @@ class AdjustmentService
     {
         DB::transaction(function () use ($data) {
 
-            $warehouseId = $data['warehouse_id'];
+            $warehouseId = (int) $data['warehouse_id'];
             $adjustments = $data['adjustment_items'];
             $reason = $data['reason'];
             $adjustmentDate = $data['adjustment_date'];
