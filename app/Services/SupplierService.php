@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\Hash;
 
 class SupplierService
 {
-    public function store($validatedData)
+    public function store($validatedData): void
     {
         DB::transaction(function () use ($validatedData) {
 
@@ -21,7 +21,7 @@ class SupplierService
         });
     }
 
-    private function createUser($validatedData)
+    private function createUser($validatedData): User
     {
         $user = User::create([
             'name' => $validatedData['name'],
@@ -45,7 +45,7 @@ class SupplierService
         return $account;
     }
 
-    private function createSupplier($validatedData, $user, $account)
+    private function createSupplier($validatedData, $user, $account): Supplier
     {
         $supplier = $account->supplier()->create([
             'name' => $validatedData['name'],
@@ -59,7 +59,7 @@ class SupplierService
         return $supplier;
     }
 
-    public function update(Supplier $supplier, array $data)
+    public function update(Supplier $supplier, array $data): void
     {
         DB::transaction(function () use ($supplier, $data) {
             $supplier->update($data);
@@ -75,7 +75,7 @@ class SupplierService
         });
     }
 
-    public function destroy(Supplier $supplier)
+    public function destroy(Supplier $supplier): void
     {
         $supplier->account->status = 'inactive';
         $supplier->account->save();

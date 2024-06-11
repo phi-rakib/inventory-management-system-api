@@ -3,10 +3,8 @@
 namespace App\Services;
 
 use App\Models\Adjustment;
-use App\Models\Product;
 use App\Models\Warehouse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Log;
 
 class AdjustmentService
 {
@@ -15,7 +13,7 @@ class AdjustmentService
         //
     }
 
-    public function store($data)
+    public function store($data): void
     {
         DB::transaction(function () use ($data) {
 
@@ -55,7 +53,7 @@ class AdjustmentService
 
     }
 
-    public function update($request, $adjustment)
+    public function update($request, $adjustment): void
     {
         DB::transaction(function () use ($adjustment, $request) {
             $adjustments = $request->input('adjustment_items');
@@ -65,10 +63,6 @@ class AdjustmentService
             // product_warehouse back to previous state
             $adjustedProducts = $adjustment->products->pluck('pivot', 'id')->toArray();
             $warehouseProducts = Warehouse::find($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray();
-            Log::debug('previous adjustment');
-            Log::debug($adjustedProducts);
-            Log::debug('warehouse products');
-            Log::debug($warehouseProducts);
 
             $update = [];
             foreach ($adjustedProducts as $productId => $product) {
@@ -80,12 +74,6 @@ class AdjustmentService
             // update product_warehouse
             $warehouseProducts = Warehouse::find($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray();
 
-            Log::debug('previous warehouse products');
-            Log::debug($warehouseProducts);
-
-            Log::debug('adjustment products');
-            Log::debug($adjustments);
-
             $update = [];
             foreach ($adjustments as $product) {
                 $productId = $product['product_id'];
@@ -93,9 +81,6 @@ class AdjustmentService
                 $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
             }
             Warehouse::find($adjustment->warehouse_id)->products()->sync($update);
-
-            Log::debug('new warehouse products');
-            Log::debug(Warehouse::find($adjustment->warehouse_id)->products->pluck('pivot', 'id')->toArray());
 
             // update adjustment_product
             $adjustment->products()->sync(array_column($adjustments, null, 'product_id'));
@@ -108,7 +93,7 @@ class AdjustmentService
         });
     }
 
-    public function destroy($adjustment)
+    public function destroy($adjustment): void
     {
         DB::transaction(function () use ($adjustment) {
             $warehouseProducts = $adjustment->warehouse()->with(['products:id'])->first()->toArray();
