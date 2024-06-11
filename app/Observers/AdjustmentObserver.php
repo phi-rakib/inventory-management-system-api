@@ -8,11 +8,11 @@ class AdjustmentObserver
 {
     public function creating(Adjustment $adjustment): void
     {
-        $adjustment->fill(['created_by' => auth()->id()]);
+        $adjustment->created_by = (int) auth()->id();
     }
 
     public function updating(Adjustment $adjustment): void
     {
-        $adjustment->fill(['updated_by' => auth()->id()]);
+        $adjustment->updated_by = (int) auth()->id();
     }
 }
