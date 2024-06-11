@@ -42,7 +42,7 @@ class DepositController extends Controller
     {
         Gate::authorize('delete', $deposit);
 
-        $deposit->deleted_by = auth()->id();
+        $deposit->deleted_by = (int) auth()->id();
         $deposit->save();
 
         $deposit->delete();

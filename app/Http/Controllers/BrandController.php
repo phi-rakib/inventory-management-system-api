@@ -48,7 +48,7 @@ class BrandController extends Controller
     {
         Gate::authorize('delete', $brand);
 
-        $brand->deleted_by = auth()->id();
+        $brand->deleted_by = (int) auth()->id();
         $brand->save();
 
         $brand->delete();

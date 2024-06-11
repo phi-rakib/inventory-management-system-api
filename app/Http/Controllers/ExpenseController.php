@@ -49,7 +49,7 @@ class ExpenseController extends Controller
     {
         Gate::authorize('delete', $expense);
 
-        $expense->deleted_by = auth()->id();
+        $expense->deleted_by = (int) auth()->id();
         $expense->save();
 
         $expense->delete(); // soft delete

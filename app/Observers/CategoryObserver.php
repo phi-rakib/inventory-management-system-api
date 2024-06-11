@@ -9,12 +9,12 @@ class CategoryObserver
     public function creating(Category $category): void
     {
         $category->slug = str($category->name)->slug()->toString();
-        $category->created_by = auth()->id();
+        $category->created_by = (int) auth()->id();
     }
 
     public function updating(Category $category): void
     {
         $category->slug = str($category->name)->slug()->toString();
-        $category->updated_by = auth()->id();
+        $category->updated_by = (int) auth()->id();
     }
 }

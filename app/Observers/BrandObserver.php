@@ -9,12 +9,12 @@ class BrandObserver
     public function creating(Brand $brand): void
     {
         $brand->slug = str($brand->name)->slug()->toString();
-        $brand->created_by = auth()->id();
+        $brand->created_by = (int) auth()->id();
     }
 
     public function updating(Brand $brand): void
     {
         $brand->slug = str($brand->name)->slug()->toString();
-        $brand->updated_by = auth()->id();
+        $brand->updated_by = (int) auth()->id();
     }
 }

@@ -47,7 +47,7 @@ class UnitTypeController extends Controller
     {
         Gate::authorize('delete', $unitType);
 
-        $unitType->deleted_by = Auth::id();
+        $unitType->deleted_by = (int) Auth::id();
         $unitType->save();
 
         $unitType->delete();

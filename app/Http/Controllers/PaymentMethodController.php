@@ -47,7 +47,7 @@ class PaymentMethodController extends Controller
     {
         Gate::authorize('delete', $paymentMethod);
 
-        $paymentMethod->deleted_by = auth()->id();
+        $paymentMethod->deleted_by = (int) auth()->id();
         $paymentMethod->save();
 
         $paymentMethod->delete();

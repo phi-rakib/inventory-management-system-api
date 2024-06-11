@@ -10,12 +10,12 @@ class PaymentMethodObserver
     {
         $paymentMethod->slug = str($paymentMethod->name)->slug()->toString();
         $paymentMethod->status = 'active';
-        $paymentMethod->created_by = auth()->id();
+        $paymentMethod->created_by = (int) auth()->id();
     }
 
     public function updating(PaymentMethod $paymentMethod): void
     {
         $paymentMethod->slug = str($paymentMethod->name)->slug()->toString();
-        $paymentMethod->updated_by = auth()->id();
+        $paymentMethod->updated_by = (int) auth()->id();
     }
 }

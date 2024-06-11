@@ -46,7 +46,7 @@ class AttributeController extends Controller
     {
         Gate::authorize('delete', $attribute);
 
-        $attribute->deleted_by = auth()->id();
+        $attribute->deleted_by = (int) auth()->id();
         $attribute->save();
 
         $attribute->delete();

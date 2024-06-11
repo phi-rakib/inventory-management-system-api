@@ -8,11 +8,11 @@ class DepositObserver
 {
     public function creating(Deposit $deposit): void
     {
-        $deposit->created_by = auth()->id();
+        $deposit->created_by = (int) auth()->id();
     }
 
     public function updating(Deposit $deposit): void
     {
-        $deposit->updated_by = auth()->id();
+        $deposit->updated_by = (int) auth()->id();
     }
 }

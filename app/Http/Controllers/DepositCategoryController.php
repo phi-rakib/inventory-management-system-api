@@ -50,7 +50,7 @@ class DepositCategoryController extends Controller
     {
         Gate::authorize('delete', $depositCategory);
 
-        $depositCategory->deleted_by = auth()->id();
+        $depositCategory->deleted_by = (int) auth()->id();
         $depositCategory->save();
 
         $depositCategory->delete();

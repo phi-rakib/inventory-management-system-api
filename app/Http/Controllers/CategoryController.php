@@ -47,7 +47,7 @@ class CategoryController extends Controller
     {
         Gate::authorize('delete', $category);
 
-        $category->deleted_by = Auth::id();
+        $category->deleted_by = (int) Auth::id();
         $category->save();
 
         $category->delete();
