@@ -44,7 +44,7 @@ class AdjustmentTest extends TestCase
 
         $data = [
             'warehouse_id' => $warehouse->id,
-            'adjustment_date' => now(),
+            'adjustment_date' => now()->toDateString(),
             'reason' => 'test reason',
             'adjustment_items' => $adjustmentItems->toArray(),
         ];

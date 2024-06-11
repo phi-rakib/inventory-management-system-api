@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreSupplierRequest;
 use App\Models\Supplier;
 use App\Services\SupplierService;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class SupplierController extends Controller
@@ -15,21 +17,21 @@ class SupplierController extends Controller
 
     }
 
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Supplier::class);
 
         return Supplier::latest()->with(['creator'])->paginate(20);
     }
 
-    public function show(Supplier $supplier)
+    public function show(Supplier $supplier): Supplier
     {
         Gate::authorize('view', $supplier);
 
         return $supplier->load(['creator', 'account']);
     }
 
-    public function store(StoreSupplierRequest $request)
+    public function store(StoreSupplierRequest $request): JsonResponse
     {
         Gate::authorize('create', Supplier::class);
 
@@ -40,7 +42,7 @@ class SupplierController extends Controller
         return response()->json(['message' => 'Supplier created successfully'], 201);
     }
 
-    public function update(Request $request, Supplier $supplier)
+    public function update(Request $request, Supplier $supplier): JsonResponse
     {
         Gate::authorize('update', $supplier);
 
@@ -51,7 +53,7 @@ class SupplierController extends Controller
         return response()->json(['message' => 'Supplier updated successfully'], 200);
     }
 
-    public function destroy(Supplier $supplier)
+    public function destroy(Supplier $supplier): JsonResponse
     {
         Gate::authorize('delete', $supplier);
 

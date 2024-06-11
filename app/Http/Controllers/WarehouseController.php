@@ -4,18 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWarehouseRequest;
 use App\Models\Warehouse;
+use Illuminate\Http\JsonResponse;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class WarehouseController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Warehouse::class);
 
         return Warehouse::latest()->with(['creator'])->paginate(20);
     }
 
-    public function show(Warehouse $warehouse)
+    public function show(Warehouse $warehouse): Warehouse
     {
         Gate::authorize('view', $warehouse);
 
@@ -28,7 +30,7 @@ class WarehouseController extends Controller
         return $warehouse;
     }
 
-    public function store(StoreWarehouseRequest $request)
+    public function store(StoreWarehouseRequest $request): JsonResponse
     {
         Gate::authorize('create', Warehouse::class);
 
@@ -37,7 +39,7 @@ class WarehouseController extends Controller
         return response()->json(['message' => 'Warehouse created successfully'], 201);
     }
 
-    public function update(StoreWarehouseRequest $request, Warehouse $warehouse)
+    public function update(StoreWarehouseRequest $request, Warehouse $warehouse): JsonResponse
     {
         Gate::authorize('update', $warehouse);
 
@@ -46,11 +48,11 @@ class WarehouseController extends Controller
         return response()->json(['message' => 'Warehouse updated successfully']);
     }
 
-    public function destroy(Warehouse $warehouse)
+    public function destroy(Warehouse $warehouse): JsonResponse
     {
         Gate::authorize('delete', $warehouse);
 
-        $warehouse->deleted_by = auth()->id();
+        $warehouse->deleted_by = (int) auth()->id();
         $warehouse->save();
 
         $warehouse->delete();

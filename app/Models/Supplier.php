@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasCommon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Supplier extends Model
@@ -21,12 +22,12 @@ class Supplier extends Model
         'user_id',
     ];
 
-    public function account()
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class);
     }
 
-    public function user()
+    public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }

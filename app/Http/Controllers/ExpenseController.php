@@ -4,19 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreExpenseRequest;
 use App\Models\Expense;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class ExpenseController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Expense::class);
 
         return Expense::with(['account', 'expenseCategory', 'paymentMethod', 'creator'])->latest()->paginate(20);
     }
 
-    public function show(Expense $expense)
+    public function show(Expense $expense): Expense
     {
         Gate::authorize('view', $expense);
 
@@ -25,7 +27,7 @@ class ExpenseController extends Controller
         return $expense;
     }
 
-    public function store(StoreExpenseRequest $request)
+    public function store(StoreExpenseRequest $request): JsonResponse
     {
         Gate::authorize('create', Expense::class);
 
@@ -34,7 +36,7 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'Expense created successfully.'], 201);
     }
 
-    public function update(Request $request, Expense $expense)
+    public function update(Request $request, Expense $expense): JsonResponse
     {
         Gate::authorize('update', $expense);
 
@@ -43,11 +45,11 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'Expense updated successfully.'], 200);
     }
 
-    public function destroy(Expense $expense)
+    public function destroy(Expense $expense): JsonResponse
     {
         Gate::authorize('delete', $expense);
 
-        $expense->deleted_by = auth()->id();
+        $expense->deleted_by = (int) auth()->id();
         $expense->save();
 
         $expense->delete(); // soft delete

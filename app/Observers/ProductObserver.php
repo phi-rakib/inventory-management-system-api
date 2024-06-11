@@ -6,16 +6,16 @@ use App\Models\Product;
 
 class ProductObserver
 {
-    public function creating(Product $product)
+    public function creating(Product $product): void
     {
         $product->slug = str($product->name)->slug()->toString();
-        $product->created_by = auth()->id();
+        $product->created_by = (int) auth()->id();
         $product->status = 'active';
     }
 
-    public function updating(Product $product)
+    public function updating(Product $product): void
     {
         $product->slug = str($product->name)->slug()->toString();
-        $product->updated_by = auth()->id();
+        $product->updated_by = (int) auth()->id();
     }
 }

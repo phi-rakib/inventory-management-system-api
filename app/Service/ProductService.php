@@ -7,7 +7,10 @@ use Illuminate\Support\Facades\DB;
 
 class ProductService
 {
-    public function store(array $productData)
+    /**
+     * @param  array<string, mixed>  $productData
+     */
+    public function store(array $productData): void
     {
         DB::transaction(function () use ($productData) {
             $product = Product::create($productData);
@@ -20,7 +23,10 @@ class ProductService
         });
     }
 
-    public function update(array $productData, Product $product)
+    /**
+     * @param  array<string, mixed>  $productData
+     */
+    public function update(array $productData, Product $product): void
     {
         DB::transaction(function () use ($productData, $product) {
 
@@ -38,10 +44,10 @@ class ProductService
         });
     }
 
-    public function destroy(Product $product)
+    public function destroy(Product $product): void
     {
         DB::transaction(function () use ($product) {
-            $product->deleted_by = auth()->id();
+            $product->deleted_by = (int) auth()->id();
             $product->save();
 
             $product->delete();

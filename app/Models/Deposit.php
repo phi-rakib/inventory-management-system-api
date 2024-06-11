@@ -5,6 +5,7 @@ namespace App\Models;
 use App\Traits\HasCommon;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class Deposit extends Model
@@ -20,19 +21,19 @@ class Deposit extends Model
         'notes',
     ];
 
-    public function account()
+    public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class)
             ->select(['id', 'name']);
     }
 
-    public function depositCategory()
+    public function depositCategory(): BelongsTo
     {
         return $this->belongsTo(DepositCategory::class)
             ->select(['id', 'name']);
     }
 
-    public function paymentMethod()
+    public function paymentMethod(): BelongsTo
     {
         return $this->belongsTo(PaymentMethod::class)
             ->select(['id', 'name']);

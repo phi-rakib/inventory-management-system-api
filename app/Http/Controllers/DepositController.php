@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDepositRequest;
 use App\Models\Deposit;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class DepositController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Deposit::class);
 
@@ -18,7 +20,7 @@ class DepositController extends Controller
             ->paginate(20);
     }
 
-    public function store(StoreDepositRequest $request)
+    public function store(StoreDepositRequest $request): JsonResponse
     {
         Gate::authorize('create', Deposit::class);
 
@@ -27,7 +29,7 @@ class DepositController extends Controller
         return response()->json(['message' => "$deposit->amount Deposited in account $deposit->account->name"], 201);
     }
 
-    public function update(Deposit $deposit, Request $request)
+    public function update(Deposit $deposit, Request $request): JsonResponse
     {
         Gate::authorize('update', $deposit);
 
@@ -36,11 +38,11 @@ class DepositController extends Controller
         return response()->json(['message' => 'Deposit updated']);
     }
 
-    public function destroy(Deposit $deposit)
+    public function destroy(Deposit $deposit): JsonResponse
     {
         Gate::authorize('delete', $deposit);
 
-        $deposit->deleted_by = auth()->id();
+        $deposit->deleted_by = (int) auth()->id();
         $deposit->save();
 
         $deposit->delete();
@@ -48,7 +50,7 @@ class DepositController extends Controller
         return response()->json(['message' => 'Deposited amount deleted'], 204);
     }
 
-    public function show(Deposit $deposit)
+    public function show(Deposit $deposit): Deposit
     {
         Gate::authorize('view', $deposit);
 

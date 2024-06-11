@@ -4,26 +4,28 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\PaymentMethodRequest;
 use App\Models\PaymentMethod;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class PaymentMethodController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', PaymentMethod::class);
 
         return PaymentMethod::latest()->paginate(20);
     }
 
-    public function show(PaymentMethod $paymentMethod)
+    public function show(PaymentMethod $paymentMethod): PaymentMethod
     {
         Gate::authorize('view', $paymentMethod);
 
         return $paymentMethod;
     }
 
-    public function store(PaymentMethodRequest $request)
+    public function store(PaymentMethodRequest $request): JsonResponse
     {
         Gate::authorize('create', PaymentMethod::class);
 
@@ -32,7 +34,7 @@ class PaymentMethodController extends Controller
         return response()->json(['message' => 'Payment method created'], 201);
     }
 
-    public function update(Request $request, PaymentMethod $paymentMethod)
+    public function update(Request $request, PaymentMethod $paymentMethod): JsonResponse
     {
         Gate::authorize('update', $paymentMethod);
 
@@ -41,11 +43,11 @@ class PaymentMethodController extends Controller
         return response()->json(['message' => 'Payment method updated']);
     }
 
-    public function destroy(PaymentMethod $paymentMethod)
+    public function destroy(PaymentMethod $paymentMethod): JsonResponse
     {
         Gate::authorize('delete', $paymentMethod);
 
-        $paymentMethod->deleted_by = auth()->id();
+        $paymentMethod->deleted_by = (int) auth()->id();
         $paymentMethod->save();
 
         $paymentMethod->delete();
@@ -53,7 +55,7 @@ class PaymentMethodController extends Controller
         return response()->json(['message' => 'Payment method deleted'], 204);
     }
 
-    public function restore(PaymentMethod $paymentMethod)
+    public function restore(PaymentMethod $paymentMethod): JsonResponse
     {
         Gate::authorize('restore', $paymentMethod);
 

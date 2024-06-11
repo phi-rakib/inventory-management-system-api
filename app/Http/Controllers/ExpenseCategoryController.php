@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreExpenseCategoryRequest;
 use App\Models\ExpenseCategory;
+use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
 class ExpenseCategoryController extends Controller
 {
-    public function index()
+    public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', ExpenseCategory::class);
 
@@ -18,14 +20,14 @@ class ExpenseCategoryController extends Controller
         return $expenseCategories;
     }
 
-    public function show(ExpenseCategory $expenseCategory)
+    public function show(ExpenseCategory $expenseCategory): ExpenseCategory
     {
         Gate::authorize('view', $expenseCategory);
 
         return $expenseCategory;
     }
 
-    public function store(StoreExpenseCategoryRequest $request)
+    public function store(StoreExpenseCategoryRequest $request): JsonResponse
     {
         Gate::authorize('create', ExpenseCategory::class);
 
@@ -34,7 +36,7 @@ class ExpenseCategoryController extends Controller
         return response()->json(['message' => 'Expense category created successfully.'], 201);
     }
 
-    public function update(Request $request, ExpenseCategory $expenseCategory)
+    public function update(Request $request, ExpenseCategory $expenseCategory): JsonResponse
     {
         Gate::authorize('update', $expenseCategory);
 
@@ -43,11 +45,11 @@ class ExpenseCategoryController extends Controller
         return response()->json(['message' => 'Expense category updated successfully.']);
     }
 
-    public function destroy(ExpenseCategory $expenseCategory)
+    public function destroy(ExpenseCategory $expenseCategory): JsonResponse
     {
         Gate::authorize('delete', $expenseCategory);
 
-        $expenseCategory->deleted_by = auth()->id();
+        $expenseCategory->deleted_by = (int) auth()->id();
         $expenseCategory->save();
 
         $expenseCategory->delete();
