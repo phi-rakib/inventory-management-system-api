@@ -123,6 +123,13 @@ class CategoryTest extends TestCase
                 'id',
                 'name',
             ],
+            'products' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'category_id',
+                ]
+            ]
         ]);
     }
 }

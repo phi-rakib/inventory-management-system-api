@@ -22,7 +22,7 @@ class CategoryController extends Controller
     {
         Gate::authorize('view', $category);
 
-        return $category->load(['creator', 'updater', 'deleter']);
+        return $category->load(['creator', 'updater', 'deleter', 'products']);
     }
 
     public function store(StoreCategoryRequest $request): JsonResponse
