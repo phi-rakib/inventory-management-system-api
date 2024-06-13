@@ -23,7 +23,10 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('accounts/restore/{id}', [AccountController::class, 'restore'])->name('accounts.restore');
     Route::apiResource('accounts', AccountController::class);
+
+    Route::get('depositCategories/restore/{id}', [DepositCategoryController::class, 'restore'])->name('depositCategories.restore');
     Route::apiResource('depositCategories', DepositCategoryController::class);
+
     Route::apiResource('deposits', DepositController::class);
     Route::apiResource('paymentMethods', PaymentMethodController::class);
     Route::apiResource('expenseCategories', ExpenseCategoryController::class);

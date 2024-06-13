@@ -60,8 +60,10 @@ class DepositCategoryController extends Controller
         ], 204);
     }
 
-    public function restore(DepositCategory $depositCategory): JsonResponse
+    public function restore($id): JsonResponse
     {
+        $depositCategory = DepositCategory::withTrashed()->find($id);
+
         Gate::authorize('restore', $depositCategory);
 
         $depositCategory->restore();
