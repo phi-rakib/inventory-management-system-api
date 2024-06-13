@@ -58,7 +58,7 @@ class PaymentMethodController extends Controller
     public function restore($id): JsonResponse
     {
         $paymentMethod = PaymentMethod::withTrashed()->find($id);
-        
+
         Gate::authorize('restore', $paymentMethod);
 
         $paymentMethod->restore();
