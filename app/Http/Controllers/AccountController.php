@@ -55,8 +55,10 @@ class AccountController extends Controller
         return response()->json(['message' => 'Account deleted successfully'], 204);
     }
 
-    public function restore(Account $account): JsonResponse
+    public function restore($id): JsonResponse
     {
+        $account = Account::withTrashed()->findOrFail($id);
+        
         Gate::authorize('restore', $account);
 
         $account->restore();

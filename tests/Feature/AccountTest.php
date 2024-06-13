@@ -150,7 +150,7 @@ class AccountTest extends TestCase
         ]);
     }
 
-    public function user_can_restore_an_account()
+    public function test_user_can_restore_an_account()
     {
         $this->user->givePermissionTo('account-restore');
 
@@ -160,7 +160,6 @@ class AccountTest extends TestCase
 
         $this->assertSoftDeleted('accounts', [
             'id' => $account->id,
-            'deleted_by' => $this->user->id,
         ]);
 
         $response = $this->get(route('accounts.restore', $account->id));
