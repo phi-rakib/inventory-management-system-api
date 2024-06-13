@@ -95,4 +95,25 @@ class PaymentMethodTest extends TestCase
 
         $response->assertJson($paymentMethod->only('id', 'name'));
     }
+
+    public function test_user_can_restore_payment_method()
+    {
+        $this->user->givePermissionTo('payment-method-restore');
+
+        $paymentMethod = PaymentMethod::factory()->create();
+
+        $paymentMethod->delete();
+
+        $this->assertSoftDeleted('payment_methods', [
+            'id' => $paymentMethod->id,
+        ]);
+
+        $response = $this->get(route('paymentMethods.restore', $paymentMethod->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('payment_methods', [
+            'id' => $paymentMethod->id,
+        ]);
+    }
 }

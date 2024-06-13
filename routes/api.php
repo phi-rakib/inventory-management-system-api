@@ -28,7 +28,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('depositCategories', DepositCategoryController::class);
 
     Route::apiResource('deposits', DepositController::class);
+
+    Route::get('paymentMethods/restore/{id}', [PaymentMethodController::class, 'restore'])->name('paymentMethods.restore');
     Route::apiResource('paymentMethods', PaymentMethodController::class);
+    
     Route::apiResource('expenseCategories', ExpenseCategoryController::class);
     Route::apiResource('expenses', ExpenseController::class);
     Route::apiResource('brands', BrandController::class);
