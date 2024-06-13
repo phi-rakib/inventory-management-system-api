@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Product;
 use App\Models\UnitType;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -113,6 +114,8 @@ class UnitTypeTest extends TestCase
 
         $unitType = UnitType::factory()->create();
 
+        $product = Product::factory()->hasAttributes(10)->hasPrices(1)->count(10)->create(['unit_type_id' => $unitType->id]);
+
         $response = $this->get(route('unitTypes.show', $unitType));
 
         $response->assertStatus(200);
@@ -134,6 +137,13 @@ class UnitTypeTest extends TestCase
                 'id',
                 'name',
             ],
+            'products' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'unit_type_id',
+                ]
+            ]
         ]);
     }
 }
