@@ -22,7 +22,9 @@ class UnitTypeController extends Controller
     {
         Gate::authorize('view', $unitType);
 
-        return $unitType->load(['creator', 'updater', 'deleter']);
+        $unitType = $unitType->load(['creator', 'updater', 'deleter', 'products']);
+
+        return $unitType;
     }
 
     public function store(StoreUnitTypeRequest $request): JsonResponse
