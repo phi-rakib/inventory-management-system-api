@@ -158,4 +158,34 @@ class SupplierTest extends TestCase
             'status' => 'inactive',
         ]);
     }
+
+    public function test_user_can_restore_supplier()
+    {
+        $this->user->givePermissionTo('supplier-restore');
+
+        $supplier = Supplier::factory()->create();
+
+        $supplier->delete();
+
+        $this->assertSoftDeleted('suppliers', ['id' => $supplier->id]);
+
+        $response = $this->get(route('suppliers.restore', $supplier->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('suppliers', ['id' => $supplier->id]);
+    }
+
+    public function test_user_can_force_delete_supplier()
+    {
+        $this->user->givePermissionTo('supplier-force-delete');
+
+        $supplier = Supplier::factory()->create();
+
+        $response = $this->delete(route('suppliers.forceDelete', $supplier->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('suppliers', ['id' => $supplier->id]);
+    }
 }
