@@ -22,7 +22,7 @@ class AccountController extends Controller
     {
         Gate::authorize('view', $account);
 
-        return $account->load(['creator', 'deleter', 'updater']);
+        return $account->load(['creator', 'deleter', 'updater', 'supplier:id,name,account_id']);
     }
 
     public function store(StoreAccountRequest $request): JsonResponse
@@ -64,5 +64,14 @@ class AccountController extends Controller
         $account->restore();
 
         return response()->json(['message' => 'Account restored successfully'], 200);
+    }
+
+    public function forceDelete($id): JsonResponse
+    {
+        $account = Account::withTrashed()->find($id);
+
+        $account->forceDelete();
+
+        return response()->json(['message' => 'Account force deleted successfully'], 204);
     }
 }

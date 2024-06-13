@@ -22,6 +22,7 @@ Route::post('login', [AuthController::class, 'login'])->name('login');
 
 Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('accounts/restore/{id}', [AccountController::class, 'restore'])->name('accounts.restore');
+    Route::delete('accounts/forceDelete/{id}', [AccountController::class, 'forceDelete'])->name('accounts.forceDelete');
     Route::apiResource('accounts', AccountController::class);
 
     Route::get('depositCategories/restore/{id}', [DepositCategoryController::class, 'restore'])->name('depositCategories.restore');
