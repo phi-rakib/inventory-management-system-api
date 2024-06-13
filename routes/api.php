@@ -24,12 +24,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('accounts/restore/{id}', [AccountController::class, 'restore'])->name('accounts.restore');
     Route::delete('accounts/forceDelete/{id}', [AccountController::class, 'forceDelete'])->name('accounts.forceDelete');
     Route::apiResource('accounts', AccountController::class);
-
+    
     Route::get('depositCategories/restore/{id}', [DepositCategoryController::class, 'restore'])->name('depositCategories.restore');
     Route::apiResource('depositCategories', DepositCategoryController::class);
-
+    
     Route::apiResource('deposits', DepositController::class);
-
+    
     Route::get('paymentMethods/restore/{id}', [PaymentMethodController::class, 'restore'])->name('paymentMethods.restore');
     Route::apiResource('paymentMethods', PaymentMethodController::class);
     
@@ -41,7 +41,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('attributes', AttributeController::class);
     Route::apiResource('attributeValues', AttributeValueController::class);
     Route::apiResource('products', ProductController::class);
+    
+    Route::get('warehouses/restore/{id}', [WarehouseController::class, 'restore'])->name('warehouses.restore');
+    Route::delete('accounts/forceDelete/{id}', [WarehouseController::class, 'forceDelete'])->name('warehouses.forceDelete');
     Route::apiResource('warehouses', WarehouseController::class);
+
     Route::apiResource('adjustments', AdjustmentController::class);
     Route::apiResource('suppliers', SupplierController::class);
 });

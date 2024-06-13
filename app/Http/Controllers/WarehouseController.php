@@ -59,4 +59,26 @@ class WarehouseController extends Controller
 
         return response()->json(['message' => 'Warehouse deleted successfully'], 204);
     }
+
+    public function restore($id): JsonResponse
+    {
+        $warehouse = Warehouse::withTrashed()->find($id);
+
+        Gate::authorize('restore', $warehouse);
+
+        $warehouse->restore();
+
+        return response()->json(['message' => 'Warehouse restored successfully']);
+    }
+
+    public function forceDelete($id): JsonResponse
+    {
+        $warehouse = Warehouse::withTrashed()->find($id);
+
+        Gate::authorize('force-delete', $warehouse);
+
+        $warehouse->forceDelete();
+
+        return response()->json(['message' => 'Warehouse force deleted successfully'], 204);
+    }
 }
