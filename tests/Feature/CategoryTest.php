@@ -132,4 +132,34 @@ class CategoryTest extends TestCase
             ],
         ]);
     }
+
+    public function test_user_can_restore_category()
+    {
+        $this->user->givePermissionTo('category-restore');
+
+        $category = Category::factory()->create();
+
+        $category->delete();
+
+        $this->assertSoftDeleted('categories', ['id' => $category->id]);
+
+        $response = $this->get(route('categories.restore', $category->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('categories', ['id' => $category->id]);
+    }
+
+    public function test_user_can_force_delete_category()
+    {
+        $this->user->givePermissionTo('category-force-delete');
+
+        $category = Category::factory()->create();
+
+        $response = $this->delete(route('categories.forceDelete', $category->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('categories', ['id' => $category->id]);
+    }
 }

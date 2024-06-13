@@ -24,28 +24,31 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('accounts/restore/{id}', [AccountController::class, 'restore'])->name('accounts.restore');
     Route::delete('accounts/forceDelete/{id}', [AccountController::class, 'forceDelete'])->name('accounts.forceDelete');
     Route::apiResource('accounts', AccountController::class);
-    
+
     Route::get('depositCategories/restore/{id}', [DepositCategoryController::class, 'restore'])->name('depositCategories.restore');
     Route::apiResource('depositCategories', DepositCategoryController::class);
-    
+
     Route::apiResource('deposits', DepositController::class);
-    
+
     Route::get('paymentMethods/restore/{id}', [PaymentMethodController::class, 'restore'])->name('paymentMethods.restore');
     Route::apiResource('paymentMethods', PaymentMethodController::class);
-    
+
     Route::apiResource('expenseCategories', ExpenseCategoryController::class);
     Route::apiResource('expenses', ExpenseController::class);
-    
+
     Route::get('brands/restore/{id}', [BrandController::class, 'restore'])->name('brands.restore');
     Route::delete('brands/forceDelete/{id}', [BrandController::class, 'forceDelete'])->name('brands.forceDelete');
     Route::apiResource('brands', BrandController::class);
 
+    Route::get('categories/restore/{id}', [CategoryController::class, 'restore'])->name('categories.restore');
+    Route::delete('categories/forceDelete/{id}', [CategoryController::class, 'forceDelete'])->name('categories.forceDelete');
     Route::apiResource('categories', CategoryController::class);
+
     Route::apiResource('unitTypes', UnitTypeController::class);
     Route::apiResource('attributes', AttributeController::class);
     Route::apiResource('attributeValues', AttributeValueController::class);
     Route::apiResource('products', ProductController::class);
-    
+
     Route::get('warehouses/restore/{id}', [WarehouseController::class, 'restore'])->name('warehouses.restore');
     Route::delete('warehouses/forceDelete/{id}', [WarehouseController::class, 'forceDelete'])->name('warehouses.forceDelete');
     Route::apiResource('warehouses', WarehouseController::class);
