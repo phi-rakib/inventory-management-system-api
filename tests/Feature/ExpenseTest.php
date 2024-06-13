@@ -154,4 +154,34 @@ class ExpenseTest extends TestCase
             ],
         ]);
     }
+
+    public function test_user_can_restore_expense()
+    {
+        $this->user->givePermissionTo('expense-restore');
+
+        $expense = Expense::factory()->create();
+
+        $expense->delete();
+
+        $this->assertSoftDeleted('expenses', ['id' => $expense->id]);
+
+        $response = $this->get(route('expenses.restore', $expense->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('expenses', ['id' => $expense->id]);
+    }
+
+    public function test_user_can_force_delete_expense()
+    {
+        $this->user->givePermissionTo('expense-force-delete');
+
+        $expense = Expense::factory()->create();
+
+        $response = $this->delete(route('expenses.forceDelete', $expense->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('expenses', ['id' => $expense->id]);
+    }
 }

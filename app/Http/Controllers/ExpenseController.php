@@ -56,4 +56,26 @@ class ExpenseController extends Controller
 
         return response()->json(['message' => 'Expense deleted successfully.'], 204);
     }
+
+    public function restore(int $id)
+    {
+        $expense = Expense::withTrashed()->find($id);
+
+        Gate::authorize('expense-restore', $expense);
+
+        $expense->restore();
+
+        return response()->json(['message' => 'Expense restored successfully']);
+    }
+
+    public function forceDelete(int $id)
+    {
+        $expense = Expense::withTrashed()->find($id);
+
+        Gate::authorize('expense-force-delete', $expense);
+
+        $expense->forceDelete();
+
+        return response()->json(['message' => 'Expense force deleted successfully'], 204);
+    }
 }
