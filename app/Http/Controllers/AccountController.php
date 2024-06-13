@@ -70,6 +70,8 @@ class AccountController extends Controller
     {
         $account = Account::withTrashed()->find($id);
 
+        Gate::authorize('forceDelete', $account);
+
         $account->forceDelete();
 
         return response()->json(['message' => 'Account force deleted successfully'], 204);
