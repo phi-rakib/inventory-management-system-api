@@ -128,8 +128,8 @@ class CategoryTest extends TestCase
                     'id',
                     'name',
                     'category_id',
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 }

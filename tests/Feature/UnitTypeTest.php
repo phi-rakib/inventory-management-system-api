@@ -142,8 +142,8 @@ class UnitTypeTest extends TestCase
                     'id',
                     'name',
                     'unit_type_id',
-                ]
-            ]
+                ],
+            ],
         ]);
     }
 }

@@ -58,7 +58,7 @@ class AccountController extends Controller
     public function restore($id): JsonResponse
     {
         $account = Account::withTrashed()->findOrFail($id);
-        
+
         Gate::authorize('restore', $account);
 
         $account->restore();
