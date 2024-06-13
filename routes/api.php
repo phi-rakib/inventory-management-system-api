@@ -20,7 +20,8 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
-Route::middleware(['auth:sanctum'])->group(function () {    
+Route::middleware(['auth:sanctum'])->group(function () {  
+    Route::get('accounts/restore/{id}', [AccountController::class, 'restore'])->name('accounts.restore');  
     Route::apiResource('accounts', AccountController::class);
     Route::apiResource('depositCategories', DepositCategoryController::class);
     Route::apiResource('deposits', DepositController::class);
