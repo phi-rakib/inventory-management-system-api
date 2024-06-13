@@ -55,4 +55,26 @@ class BrandController extends Controller
 
         return response()->json(['message' => 'Brand deleted successfully.'], 204);
     }
+
+    public function restore($id)
+    {
+        $brand = Brand::withTrashed()->find($id);
+
+        Gate::authorize('restore', $brand);
+
+        $brand->restore();
+
+        return response()->json(['message' => 'Brand restored successfully']);
+    }
+
+    public function forceDelete($id)
+    {
+        $brand = Brand::withTrashed()->find($id);
+
+        Gate::authorize('forceDelete', $brand);
+
+        $brand->forceDelete();
+
+        return response()->json(['message' => 'Brand force deleted successfully'], 204);
+    }
 }

@@ -35,7 +35,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     
     Route::apiResource('expenseCategories', ExpenseCategoryController::class);
     Route::apiResource('expenses', ExpenseController::class);
+    
+    Route::get('brands/restore/{id}', [BrandController::class, 'restore'])->name('brands.restore');
+    Route::delete('brands/forceDelete/{id}', [BrandController::class, 'forceDelete'])->name('brands.forceDelete');
     Route::apiResource('brands', BrandController::class);
+
     Route::apiResource('categories', CategoryController::class);
     Route::apiResource('unitTypes', UnitTypeController::class);
     Route::apiResource('attributes', AttributeController::class);
@@ -43,7 +47,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('products', ProductController::class);
     
     Route::get('warehouses/restore/{id}', [WarehouseController::class, 'restore'])->name('warehouses.restore');
-    Route::delete('accounts/forceDelete/{id}', [WarehouseController::class, 'forceDelete'])->name('warehouses.forceDelete');
+    Route::delete('warehouses/forceDelete/{id}', [WarehouseController::class, 'forceDelete'])->name('warehouses.forceDelete');
     Route::apiResource('warehouses', WarehouseController::class);
 
     Route::apiResource('adjustments', AdjustmentController::class);
