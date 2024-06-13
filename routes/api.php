@@ -18,9 +18,9 @@ use App\Http\Controllers\UnitTypeController;
 use App\Http\Controllers\WarehouseController;
 use Illuminate\Support\Facades\Route;
 
-Route::post('login', [AuthController::class, 'login']);
+Route::post('login', [AuthController::class, 'login'])->name('login');
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function () {    
     Route::apiResource('accounts', AccountController::class);
     Route::apiResource('depositCategories', DepositCategoryController::class);
     Route::apiResource('deposits', DepositController::class);

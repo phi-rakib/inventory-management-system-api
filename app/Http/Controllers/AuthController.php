@@ -12,7 +12,7 @@ class AuthController extends Controller
     {
         $credentials = $request->validated();
 
-        if (! Auth::attempt($credentials)) {
+        if (! Auth::guard('web')->attempt($credentials)) {
             return response()->json(['message' => 'Unauthorized'], 401);
         }
 
