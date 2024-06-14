@@ -7,6 +7,7 @@ use App\Models\Deposit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class DepositController extends Controller
@@ -42,10 +43,20 @@ class DepositController extends Controller
     {
         Gate::authorize('delete', $deposit);
 
-        $deposit->deleted_by = (int) auth()->id();
-        $deposit->save();
+        DB::beginTransaction();
 
-        $deposit->delete();
+        try {
+            $deposit->account()->decrement('balance', $deposit->amount);
+
+            $deposit->deleted_by = (int) auth()->id();
+            $deposit->save();
+
+            $deposit->delete();
+
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollBack();
+        }
 
         return response()->json(['message' => 'Deposited amount deleted'], 204);
     }

@@ -65,6 +65,10 @@ class DepositTest extends TestCase
         $this->user->givePermissionTo('deposit-delete');
 
         $deposit = Deposit::factory()->create();
+        
+        $account = $deposit->account;
+
+        $this->assertEquals($deposit->amount, $account->balance);
 
         $response = $this->delete(route('deposits.destroy', $deposit));
 
@@ -73,6 +77,11 @@ class DepositTest extends TestCase
         $this->assertSoftDeleted('deposits', [
             'id' => $deposit->id,
             'deleted_by' => $this->user->id,
+        ]);
+
+        $this->assertDatabaseHas('accounts', [
+            'id' => $account->id,
+            'balance' => 0,
         ]);
     }
 

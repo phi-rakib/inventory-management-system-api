@@ -24,7 +24,7 @@ class Deposit extends Model
     public function account(): BelongsTo
     {
         return $this->belongsTo(Account::class)
-            ->select(['id', 'name']);
+            ->select(['id', 'name', 'balance']);
     }
 
     public function depositCategory(): BelongsTo
