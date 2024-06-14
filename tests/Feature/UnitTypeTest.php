@@ -146,4 +146,37 @@ class UnitTypeTest extends TestCase
             ],
         ]);
     }
+
+    public function test_user_can_restore_unit_type()
+    {
+        $this->user->givePermissionTo('unit-type-restore');
+
+        $unitType = UnitType::factory()->create();
+
+        $unitType->delete();
+
+        $this->assertSoftDeleted('unit_types', ['id' => $unitType->id]);
+
+        $response = $this->get(route('unitTypes.restore', $unitType->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('unit_types', [
+            'id' => $unitType->id,
+            'deleted_at' => null,
+        ]);
+    }
+
+    public function test_user_can_force_delete_unit_type()
+    {
+        $this->user->givePermissionTo('unit-type-force-delete');
+
+        $unitType = UnitType::factory()->create();
+
+        $response = $this->delete(route('unitTypes.forceDelete', $unitType->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('unit_types', ['id' => $unitType->id]);
+    }
 }

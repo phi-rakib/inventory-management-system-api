@@ -56,4 +56,26 @@ class UnitTypeController extends Controller
 
         return response()->json(['message' => 'Unit type deleted successfully.'], 204);
     }
+
+    public function restore(int $id)
+    {
+        $unitType = UnitType::withTrashed()->find($id);
+
+        Gate::authorize('restore', $unitType);
+
+        $unitType->restore();
+
+        return response()->json(['message' => 'Unit Type restored successfully']);
+    }
+
+    public function forceDelete(int $id)
+    {
+        $unitType = UnitType::find($id);
+
+        Gate::authorize('forceDelete', $unitType);
+
+        $unitType->forceDelete();
+
+        return response()->json(['message' => 'Unit Type force deleted successfully'], 204);
+    }
 }

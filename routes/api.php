@@ -48,6 +48,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('categories/forceDelete/{id}', [CategoryController::class, 'forceDelete'])->name('categories.forceDelete');
     Route::apiResource('categories', CategoryController::class);
 
+    Route::get('unitTypes/restore/{id}', [UnitTypeController::class, 'restore'])->name('unitTypes.restore');
+    Route::delete('unitTypes/forceDelete/{id}', [UnitTypeController::class, 'forceDelete'])->name('unitTypes.forceDelete');
     Route::apiResource('unitTypes', UnitTypeController::class);
     Route::apiResource('attributes', AttributeController::class);
     Route::apiResource('attributeValues', AttributeValueController::class);
