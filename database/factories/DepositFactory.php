@@ -32,7 +32,7 @@ class DepositFactory extends Factory
 
     public function configure(): static
     {
-        return $this->afterCreating(function(Deposit $deposit) {
+        return $this->afterCreating(function (Deposit $deposit) {
             $deposit->account()->increment('balance', $deposit->amount);
         });
     }
