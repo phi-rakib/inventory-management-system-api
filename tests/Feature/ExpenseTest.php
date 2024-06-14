@@ -53,22 +53,6 @@ class ExpenseTest extends TestCase
         ]);
     }
 
-    public function test_user_can_delete_expense()
-    {
-        $this->user->givePermissionTo('expense-delete');
-
-        $expense = Expense::factory()->create();
-
-        $response = $this->delete(route('expenses.destroy', $expense->id));
-
-        $response->assertStatus(204);
-
-        $this->assertSoftDeleted('expenses', [
-            'id' => $expense->id,
-            'deleted_by' => auth()->id(),
-        ]);
-    }
-
     public function test_user_can_read_all_expenses()
     {
         $this->user->givePermissionTo('expense-list');
@@ -155,13 +139,40 @@ class ExpenseTest extends TestCase
         ]);
     }
 
-    public function test_user_can_restore_expense()
+    public function test_user_can_delete_expense()
     {
-        $this->user->givePermissionTo('expense-restore');
+        $this->user->givePermissionTo('expense-delete');
 
         $expense = Expense::factory()->create();
 
-        $expense->delete();
+        $account = $expense->account;
+
+        $remainingBalance = $account->balance + $expense->amount;
+
+        $response = $this->delete(route('expenses.destroy', $expense->id));
+
+        $response->assertStatus(204);
+
+        $this->assertSoftDeleted('expenses', [
+            'id' => $expense->id,
+            'deleted_by' => auth()->id(),
+        ]);
+
+        $this->assertDatabaseHas('accounts', [
+            'id' => $account->id,
+            'balance' => $remainingBalance,
+        ]);
+    }
+
+    public function test_user_can_restore_expense()
+    {
+        $this->user->givePermissionTo(['expense-restore', 'expense-delete']);
+
+        $expense = Expense::factory()->create();
+
+        $account = $expense->account;
+
+        $this->delete(route('expenses.destroy', $expense->id));
 
         $this->assertSoftDeleted('expenses', ['id' => $expense->id]);
 
@@ -170,6 +181,11 @@ class ExpenseTest extends TestCase
         $response->assertOk();
 
         $this->assertDatabaseHas('expenses', ['id' => $expense->id]);
+
+        $this->assertDatabaseHas('accounts', [
+            'id' => $account->id,
+            'balance' => $account->balance,
+        ]);
     }
 
     public function test_user_can_force_delete_expense()
@@ -178,10 +194,19 @@ class ExpenseTest extends TestCase
 
         $expense = Expense::factory()->create();
 
+        $account = $expense->account;
+
+        $newAccountBalance = $account->balance + $expense->amount;
+
         $response = $this->delete(route('expenses.forceDelete', $expense->id));
 
         $response->assertNoContent();
 
         $this->assertDatabaseMissing('expenses', ['id' => $expense->id]);
+
+        $this->assertDatabaseHas('accounts', [
+            'id' => $account->id,
+            'balance' => $newAccountBalance,
+        ]);
     }
 }

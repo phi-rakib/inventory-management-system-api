@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreExpenseRequest;
 use App\Models\Expense;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class ExpenseController extends Controller
@@ -49,10 +51,14 @@ class ExpenseController extends Controller
     {
         Gate::authorize('delete', $expense);
 
-        $expense->deleted_by = (int) auth()->id();
-        $expense->save();
+        DB::transaction(function () use ($expense) {
+            $expense->account()->increment('balance', $expense->amount);
 
-        $expense->delete(); // soft delete
+            $expense->deleted_by = (int) auth()->id();
+            $expense->save();
+
+            $expense->delete(); // soft delete
+        });
 
         return response()->json(['message' => 'Expense deleted successfully.'], 204);
     }
@@ -63,7 +69,22 @@ class ExpenseController extends Controller
 
         Gate::authorize('expense-restore', $expense);
 
-        $expense->restore();
+        DB::beginTransaction();
+
+        try {
+            $account = $expense->account;
+            if ($account->balance < $expense->amount) {
+                throw new Exception('Could not restore because of Insufficient balance.');
+            }
+            $account->decrement('balance', $expense->amount);
+
+            $expense->restore();
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
 
         return response()->json(['message' => 'Expense restored successfully']);
     }
@@ -74,7 +95,11 @@ class ExpenseController extends Controller
 
         Gate::authorize('expense-force-delete', $expense);
 
-        $expense->forceDelete();
+        DB::transaction(function () use ($expense) {
+            $expense->account()->increment('balance', $expense->amount);
+
+            $expense->forceDelete();
+        });
 
         return response()->json(['message' => 'Expense force deleted successfully'], 204);
     }
