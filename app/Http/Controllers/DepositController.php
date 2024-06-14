@@ -21,6 +21,19 @@ class DepositController extends Controller
             ->paginate(20);
     }
 
+    public function show(Deposit $deposit): Deposit
+    {
+        Gate::authorize('view', $deposit);
+
+        $deposit->load([
+            'account',
+            'depositCategory',
+            'paymentMethod',
+        ]);
+
+        return $deposit;
+    }
+
     public function store(StoreDepositRequest $request): JsonResponse
     {
         Gate::authorize('create', Deposit::class);
@@ -46,7 +59,13 @@ class DepositController extends Controller
         DB::beginTransaction();
 
         try {
-            $deposit->account()->decrement('balance', $deposit->amount);
+            $account = $deposit->account;
+
+            if ($account->balance < $deposit->amount) {
+                throw new \Exception('Account Balance is less than deposited amount');
+            }
+
+            $account->decrement('balance', $deposit->amount);
 
             $deposit->deleted_by = (int) auth()->id();
             $deposit->save();
@@ -54,23 +73,54 @@ class DepositController extends Controller
             $deposit->delete();
 
             DB::commit();
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
             DB::rollBack();
+            throw $ex;
         }
 
         return response()->json(['message' => 'Deposited amount deleted'], 204);
     }
 
-    public function show(Deposit $deposit): Deposit
+    public function restore(int $id)
     {
-        Gate::authorize('view', $deposit);
+        $deposit = Deposit::withTrashed()->find($id);
 
-        $deposit->load([
-            'account',
-            'depositCategory',
-            'paymentMethod',
-        ]);
+        Gate::authorize('restore', $deposit);
 
-        return $deposit;
+        DB::transaction(function () use ($deposit) {
+            $deposit->restore();
+
+            $deposit->account()->increment('balance', $deposit->amount);
+        });
+
+        return response()->json(['message' => 'Deposit restored successfully']);
+    }
+
+    public function forceDelete(int $id)
+    {
+        $deposit = Deposit::find($id);
+
+        Gate::authorize('forceDelete', $deposit);
+
+        DB::beginTransaction();
+
+        try {
+            $account = $deposit->account;
+
+            if ($account->balance < $deposit->amount) {
+                throw new \Exception('Account Balance is less than deposited amount');
+            }
+
+            $account->decrement('balance', $deposit->amount);
+
+            $deposit->forceDelete();
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
+
+        return response()->json(['message' => 'Deposit force deleted successfully'], 204);
     }
 }

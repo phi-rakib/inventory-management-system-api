@@ -28,6 +28,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('depositCategories/restore/{id}', [DepositCategoryController::class, 'restore'])->name('depositCategories.restore');
     Route::apiResource('depositCategories', DepositCategoryController::class);
 
+    Route::get('deposits/restore/{id}', [DepositController::class, 'restore'])->name('deposits.restore');
+    Route::delete('deposits/forceDelete/{id}', [DepositController::class, 'forceDelete'])->name('deposits.forceDelete');
     Route::apiResource('deposits', DepositController::class);
 
     Route::get('paymentMethods/restore/{id}', [PaymentMethodController::class, 'restore'])->name('paymentMethods.restore');
