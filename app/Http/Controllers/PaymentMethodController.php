@@ -55,7 +55,7 @@ class PaymentMethodController extends Controller
         return response()->json(['message' => 'Payment method deleted'], 204);
     }
 
-    public function restore($id): JsonResponse
+    public function restore(int $id): JsonResponse
     {
         $paymentMethod = PaymentMethod::withTrashed()->find($id);
 
@@ -64,5 +64,16 @@ class PaymentMethodController extends Controller
         $paymentMethod->restore();
 
         return response()->json(['message' => 'Payment method restored']);
+    }
+
+    public function forceDelete(int $id): JsonResponse
+    {
+        $paymentMethod = PaymentMethod::find($id);
+
+        Gate::authorize('forceDelete', $paymentMethod);
+
+        $paymentMethod->forceDelete();
+
+        return response()->json(['message' => 'Payment Method force deleted successfully'], 204);
     }
 }
