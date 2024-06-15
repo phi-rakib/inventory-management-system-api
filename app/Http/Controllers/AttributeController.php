@@ -6,6 +6,7 @@ use App\Http\Requests\StoreAttributeRequest;
 use App\Models\Attribute;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class AttributeController extends Controller
@@ -46,10 +47,14 @@ class AttributeController extends Controller
     {
         Gate::authorize('delete', $attribute);
 
-        $attribute->deleted_by = (int) auth()->id();
-        $attribute->save();
+        DB::transaction(function () use ($attribute) {
+            $attribute->attributeValues()->delete();
 
-        $attribute->delete();
+            $attribute->deleted_by = (int) auth()->id();
+            $attribute->save();
+
+            $attribute->delete();
+        });
 
         return response()->json(['message' => 'Attribute deleted successfully.'], 204);
     }

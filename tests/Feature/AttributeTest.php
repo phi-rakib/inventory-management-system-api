@@ -57,7 +57,9 @@ class AttributeTest extends TestCase
     {
         $this->user->givePermissionTo('attribute-delete');
 
-        $attribute = Attribute::factory()->create();
+        $attribute = Attribute::factory()
+            ->hasAttributeValues(2)
+            ->create();
 
         $response = $this->delete(route('attributes.destroy', $attribute));
 
@@ -67,6 +69,12 @@ class AttributeTest extends TestCase
             'id' => $attribute->id,
             'deleted_by' => $this->user->id,
         ]);
+
+        foreach ($attribute->attributeValues as $attributeValue) {
+            $this->assertSoftDeleted('attribute_values', [
+                'id' => $attributeValue->id,
+            ]);
+        }
     }
 
     public function test_user_can_view_all_attributes()
