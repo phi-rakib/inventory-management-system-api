@@ -95,4 +95,39 @@ class DepositCategoryTest extends TestCase
 
         $response->assertJsonCount(10, 'data');
     }
+
+    public function test_user_can_restore_deposit_category(): void
+    {
+        $this->user->givePermissionTo('deposit-category-restore');
+
+        $depositCategory = DepositCategory::factory()->create();
+
+        $depositCategory->delete();
+
+        $this->assertSoftDeleted('deposit_categories', [
+            'id' => $depositCategory->id,
+        ]);
+
+        $response = $this->get(route('depositCategories.restore', $depositCategory->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('deposit_categories', [
+            'id' => $depositCategory->id,
+            'deleted_at' => null,
+        ]);
+    }
+
+    public function test_user_can_force_delete_depositCategory()
+    {
+        $this->user->givePermissionTo('deposit-category-force-delete');
+
+        $depositCategory = DepositCategory::factory()->create();
+
+        $response = $this->delete(route('depositCategories.forceDelete', $depositCategory->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('deposit_categories', ['id' => $depositCategory->id]);
+    }
 }

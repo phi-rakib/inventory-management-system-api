@@ -7,6 +7,7 @@ use App\Models\Deposit;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class DepositController extends Controller
@@ -18,6 +19,19 @@ class DepositController extends Controller
         return Deposit::with(['account', 'depositCategory', 'paymentMethod'])
             ->latest()
             ->paginate(20);
+    }
+
+    public function show(Deposit $deposit): Deposit
+    {
+        Gate::authorize('view', $deposit);
+
+        $deposit->load([
+            'account',
+            'depositCategory',
+            'paymentMethod',
+        ]);
+
+        return $deposit;
     }
 
     public function store(StoreDepositRequest $request): JsonResponse
@@ -42,24 +56,79 @@ class DepositController extends Controller
     {
         Gate::authorize('delete', $deposit);
 
-        $deposit->deleted_by = (int) auth()->id();
-        $deposit->save();
+        DB::beginTransaction();
 
-        $deposit->delete();
+        try {
+            $account = $deposit->account;
+
+            if (! $account) {
+                throw new \Exception('No Account is associated with this deposit');
+            }
+
+            if ($account->balance < $deposit->amount) {
+                throw new \Exception('Account Balance is less than deposited amount');
+            }
+
+            $account->decrement('balance', $deposit->amount);
+
+            $deposit->deleted_by = (int) auth()->id();
+            $deposit->save();
+
+            $deposit->delete();
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
 
         return response()->json(['message' => 'Deposited amount deleted'], 204);
     }
 
-    public function show(Deposit $deposit): Deposit
+    public function restore(int $id): JsonResponse
     {
-        Gate::authorize('view', $deposit);
+        $deposit = Deposit::withTrashed()->findOrFail($id);
 
-        $deposit->load([
-            'account',
-            'depositCategory',
-            'paymentMethod',
-        ]);
+        Gate::authorize('restore', $deposit);
 
-        return $deposit;
+        DB::transaction(function () use ($deposit) {
+            $deposit->restore();
+
+            $deposit->account()->increment('balance', $deposit->amount);
+        });
+
+        return response()->json(['message' => 'Deposit restored successfully']);
+    }
+
+    public function forceDelete(int $id): JsonResponse
+    {
+        $deposit = Deposit::findOrFail($id);
+
+        Gate::authorize('forceDelete', $deposit);
+
+        DB::beginTransaction();
+
+        try {
+            $account = $deposit->account;
+
+            if (! $account) {
+                throw new \Exception('No Account is associated with this deposit');
+            }
+
+            if ($account->balance < $deposit->amount) {
+                throw new \Exception('Account Balance is less than deposited amount');
+            }
+
+            $account->decrement('balance', $deposit->amount);
+
+            $deposit->forceDelete();
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
+
+        return response()->json(['message' => 'Deposit force deleted successfully'], 204);
     }
 }

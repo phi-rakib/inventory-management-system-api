@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreExpenseRequest;
 use App\Models\Expense;
+use Exception;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class ExpenseController extends Controller
@@ -49,11 +51,61 @@ class ExpenseController extends Controller
     {
         Gate::authorize('delete', $expense);
 
-        $expense->deleted_by = (int) auth()->id();
-        $expense->save();
+        DB::transaction(function () use ($expense) {
+            $expense->account()->increment('balance', $expense->amount);
 
-        $expense->delete(); // soft delete
+            $expense->deleted_by = (int) auth()->id();
+            $expense->save();
+
+            $expense->delete(); // soft delete
+        });
 
         return response()->json(['message' => 'Expense deleted successfully.'], 204);
+    }
+
+    public function restore(int $id): JsonResponse
+    {
+        $expense = Expense::withTrashed()->findOrFail($id);
+
+        Gate::authorize('expense-restore', $expense);
+
+        DB::beginTransaction();
+
+        try {
+            $account = $expense->account;
+
+            if (! $account) {
+                throw new \Exception('No account is associated with this expense');
+            }
+
+            if ($account->balance < $expense->amount) {
+                throw new Exception('Could not restore because of Insufficient balance.');
+            }
+            $account->decrement('balance', $expense->amount);
+
+            $expense->restore();
+
+            DB::commit();
+        } catch (\Exception $ex) {
+            DB::rollBack();
+            throw $ex;
+        }
+
+        return response()->json(['message' => 'Expense restored successfully']);
+    }
+
+    public function forceDelete(int $id): JsonResponse
+    {
+        $expense = Expense::withTrashed()->findOrFail($id);
+
+        Gate::authorize('expense-force-delete', $expense);
+
+        DB::transaction(function () use ($expense) {
+            $expense->account()->increment('balance', $expense->amount);
+
+            $expense->forceDelete();
+        });
+
+        return response()->json(['message' => 'Expense force deleted successfully'], 204);
     }
 }

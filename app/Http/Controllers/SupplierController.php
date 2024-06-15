@@ -61,4 +61,26 @@ class SupplierController extends Controller
 
         return response()->json(['message' => 'Supplier deleted successfully'], 204);
     }
+
+    public function restore(int $id): JsonResponse
+    {
+        $supplier = Supplier::withTrashed()->findOrFail($id);
+
+        Gate::authorize('restore', $supplier);
+
+        $supplier->restore();
+
+        return response()->json(['message' => 'Supplier restored successfully']);
+    }
+
+    public function forceDelete(int $id): JsonResponse
+    {
+        $supplier = Supplier::withTrashed()->findOrFail($id);
+
+        Gate::authorize('forceDelete', $supplier);
+
+        $supplier->forceDelete();
+
+        return response()->json(['messsage' => 'Supplier force deleted successfully'], 204);
+    }
 }

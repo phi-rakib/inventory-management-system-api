@@ -18,6 +18,6 @@ class Category extends Model
 
     public function products(): HasMany
     {
-        return $this->hasMany(Product::class);
+        return $this->hasMany(Product::class)->select(['id', 'name', 'category_id']);
     }
 }

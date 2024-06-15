@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Product;
 use App\Models\UnitType;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -113,6 +114,8 @@ class UnitTypeTest extends TestCase
 
         $unitType = UnitType::factory()->create();
 
+        $product = Product::factory()->hasAttributes(10)->hasPrices(1)->count(10)->create(['unit_type_id' => $unitType->id]);
+
         $response = $this->get(route('unitTypes.show', $unitType));
 
         $response->assertStatus(200);
@@ -134,6 +137,46 @@ class UnitTypeTest extends TestCase
                 'id',
                 'name',
             ],
+            'products' => [
+                '*' => [
+                    'id',
+                    'name',
+                    'unit_type_id',
+                ],
+            ],
         ]);
+    }
+
+    public function test_user_can_restore_unit_type()
+    {
+        $this->user->givePermissionTo('unit-type-restore');
+
+        $unitType = UnitType::factory()->create();
+
+        $unitType->delete();
+
+        $this->assertSoftDeleted('unit_types', ['id' => $unitType->id]);
+
+        $response = $this->get(route('unitTypes.restore', $unitType->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('unit_types', [
+            'id' => $unitType->id,
+            'deleted_at' => null,
+        ]);
+    }
+
+    public function test_user_can_force_delete_unit_type()
+    {
+        $this->user->givePermissionTo('unit-type-force-delete');
+
+        $unitType = UnitType::factory()->create();
+
+        $response = $this->delete(route('unitTypes.forceDelete', $unitType->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('unit_types', ['id' => $unitType->id]);
     }
 }

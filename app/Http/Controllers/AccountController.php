@@ -7,6 +7,7 @@ use App\Models\Account;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class AccountController extends Controller
@@ -22,7 +23,7 @@ class AccountController extends Controller
     {
         Gate::authorize('view', $account);
 
-        return $account->load(['creator', 'deleter', 'updater']);
+        return $account->load(['creator', 'deleter', 'updater', 'supplier:id,name,account_id']);
     }
 
     public function store(StoreAccountRequest $request): JsonResponse
@@ -47,20 +48,35 @@ class AccountController extends Controller
     {
         Gate::authorize('delete', $account);
 
-        $account->deleted_by = (int) auth()->id();
-        $account->save();
+        DB::transaction(function () use ($account) {
+            $account->deleted_by = (int) auth()->id();
+            $account->save();
 
-        $account->delete(); // soft delete
+            $account->delete(); // soft delete
+        });
 
         return response()->json(['message' => 'Account deleted successfully'], 204);
     }
 
-    public function restore(Account $account): JsonResponse
+    public function restore(int $id): JsonResponse
     {
+        $account = Account::withTrashed()->findOrFail($id);
+
         Gate::authorize('restore', $account);
 
         $account->restore();
 
         return response()->json(['message' => 'Account restored successfully'], 200);
+    }
+
+    public function forceDelete(int $id): JsonResponse
+    {
+        $account = Account::withTrashed()->findOrFail($id);
+
+        Gate::authorize('forceDelete', $account);
+
+        $account->forceDelete();
+
+        return response()->json(['message' => 'Account force deleted successfully'], 204);
     }
 }

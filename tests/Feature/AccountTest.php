@@ -149,4 +149,39 @@ class AccountTest extends TestCase
             ],
         ]);
     }
+
+    public function test_user_can_restore_an_account()
+    {
+        $this->user->givePermissionTo('account-restore');
+
+        $account = Account::factory()->create();
+
+        $account->delete();
+
+        $this->assertSoftDeleted('accounts', [
+            'id' => $account->id,
+        ]);
+
+        $response = $this->get(route('accounts.restore', $account->id));
+
+        $response->assertStatus(200);
+
+        $this->assertDatabaseHas('accounts', [
+            'id' => $account->id,
+            'deleted_at' => null,
+        ]);
+    }
+
+    public function test_user_can_force_delete_an_account()
+    {
+        $this->user->givePermissionTo('account-force-delete');
+
+        $account = Account::factory()->create();
+
+        $response = $this->delete(route('accounts.forceDelete', $account->id));
+
+        $response->assertStatus(204);
+
+        $this->assertDatabaseEmpty('accounts');
+    }
 }

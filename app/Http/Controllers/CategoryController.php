@@ -22,7 +22,7 @@ class CategoryController extends Controller
     {
         Gate::authorize('view', $category);
 
-        return $category->load(['creator', 'updater', 'deleter']);
+        return $category->load(['creator', 'updater', 'deleter', 'products']);
     }
 
     public function store(StoreCategoryRequest $request): JsonResponse
@@ -53,5 +53,27 @@ class CategoryController extends Controller
         $category->delete();
 
         return response()->json(['message' => 'Category deleted successfully.'], 204);
+    }
+
+    public function restore(int $id): JsonResponse
+    {
+        $category = Category::withTrashed()->findOrFail($id);
+
+        Gate::authorize('category-restore', $category);
+
+        $category->restore();
+
+        return response()->json(['message' => 'Category restored succeessfully']);
+    }
+
+    public function forceDelete(int $id): JsonResponse
+    {
+        $category = Category::withTrashed()->findOrFail($id);
+
+        Gate::authorize('category-force-delete', $category);
+
+        $category->forceDelete();
+
+        return response()->json(['message' => 'Category force deleted successfully'], 204);
     }
 }

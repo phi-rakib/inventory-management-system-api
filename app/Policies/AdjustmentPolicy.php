@@ -46,20 +46,4 @@ class AdjustmentPolicy
     {
         return $user->can('adjustment-delete');
     }
-
-    /**
-     * Determine whether the user can restore the model.
-     */
-    public function restore(User $user, Adjustment $adjustment): bool
-    {
-        return $user->can('adjustment-restore');
-    }
-
-    /**
-     * Determine whether the user can permanently delete the model.
-     */
-    public function forceDelete(User $user, Adjustment $adjustment): bool
-    {
-        return $user->can('adjustment-force-delete');
-    }
 }

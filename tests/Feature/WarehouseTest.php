@@ -116,4 +116,37 @@ class WarehouseTest extends TestCase
             'updated_at',
         ]);
     }
+
+    public function test_user_can_restore_warehouse()
+    {
+        $this->user->givePermissionTo('warehouse-restore');
+
+        $warehouse = Warehouse::factory()->create();
+
+        $warehouse->delete();
+
+        $this->assertSoftDeleted('warehouses', ['id' => $warehouse->id]);
+
+        $response = $this->get(route('warehouses.restore', $warehouse->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('warehouses', [
+            'id' => $warehouse->id,
+            'deleted_at' => null,
+        ]);
+    }
+
+    public function test_user_can_force_delete_warehouse()
+    {
+        $this->user->givePermissionTo('warehouse-force-delete');
+
+        $warehouse = Warehouse::factory()->create();
+
+        $response = $this->delete(route('warehouses.forceDelete', $warehouse->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('warehouses', ['id' => $warehouse->id]);
+    }
 }

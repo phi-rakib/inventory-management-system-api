@@ -122,4 +122,34 @@ class BrandTest extends TestCase
             ],
         ]);
     }
+
+    public function test_user_can_restore_brand()
+    {
+        $this->user->givePermissionTo('brand-restore');
+
+        $brand = Brand::factory()->create();
+
+        $brand->delete();
+
+        $this->assertSoftDeleted('brands', [
+            'id' => $brand->id,
+        ]);
+
+        $response = $this->get(route('brands.restore', $brand->id));
+
+        $response->assertOk();
+    }
+
+    public function test_user_can_force_delete_brand()
+    {
+        $this->user->givePermissionTo('brand-force-delete');
+
+        $brand = Brand::factory()->create();
+
+        $response = $this->delete(route('brands.forceDelete', $brand->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('brands', ['id' => $brand->id]);
+    }
 }
