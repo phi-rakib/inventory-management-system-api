@@ -7,6 +7,7 @@ use App\Models\Account;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class AccountController extends Controller
@@ -47,10 +48,12 @@ class AccountController extends Controller
     {
         Gate::authorize('delete', $account);
 
-        $account->deleted_by = (int) auth()->id();
-        $account->save();
+        DB::transaction(function () use ($account) {
+            $account->deleted_by = (int) auth()->id();
+            $account->save();
 
-        $account->delete(); // soft delete
+            $account->delete(); // soft delete
+        });
 
         return response()->json(['message' => 'Account deleted successfully'], 204);
     }
@@ -61,7 +64,9 @@ class AccountController extends Controller
 
         Gate::authorize('restore', $account);
 
-        $account->restore();
+        if ($account) {
+            $account->restore();
+        }
 
         return response()->json(['message' => 'Account restored successfully'], 200);
     }
@@ -72,7 +77,9 @@ class AccountController extends Controller
 
         Gate::authorize('forceDelete', $account);
 
-        $account->forceDelete();
+        if ($account) {
+            $account->forceDelete();
+        }
 
         return response()->json(['message' => 'Account force deleted successfully'], 204);
     }
