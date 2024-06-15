@@ -36,6 +36,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::delete('paymentMethods/forceDelete/{id}', [PaymentMethodController::class, 'forceDelete'])->name('paymentMethods.forceDelete');
     Route::apiResource('paymentMethods', PaymentMethodController::class);
 
+    Route::get('expenseCategories/restore/{id}', [ExpenseCategoryController::class, 'restore'])->name('expenseCategories.restore');
+    Route::delete('expenseCategories/forceDelete/{id}', [ExpenseCategoryController::class, 'forceDelete'])->name('expenseCategories.forceDelete');
     Route::apiResource('expenseCategories', ExpenseCategoryController::class);
 
     Route::get('expenses/restore/{id}', [ExpenseController::class, 'restore'])->name('expenses.restore');

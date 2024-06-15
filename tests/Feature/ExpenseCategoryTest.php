@@ -100,4 +100,32 @@ class ExpenseCategoryTest extends TestCase
             'name' => $expenseCategory->name,
         ]);
     }
+
+    public function test_user_can_restore_expense_category()
+    {
+        $this->user->givePermissionTo(['expense-category-restore', 'expense-category-delete']);
+
+        $expenseCategory = ExpenseCategory::factory()->create();
+
+        $this->delete(route('expenseCategories.destroy', $expenseCategory->id));
+
+        $response = $this->get(route('expenseCategories.restore', $expenseCategory->id));
+
+        $response->assertOk();
+
+        $this->assertDatabasehas('expense_categories', ['id' => $expenseCategory->id, 'deleted_at' => null]);
+    }
+
+    public function test_user_can_force_delete_category()
+    {
+        $this->user->givePermissionTo('expense-category-force-delete');
+
+        $expenseCategory = ExpenseCategory::factory()->create();
+
+        $response = $this->delete(route('expenseCategories.forceDelete', $expenseCategory->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('expense_categories', ['id' => $expenseCategory->id]);
+    }
 }
