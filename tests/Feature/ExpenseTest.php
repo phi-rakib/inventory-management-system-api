@@ -6,6 +6,7 @@ use App\Models\Expense;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Exceptions;
 use Tests\TestCase;
 
 class ExpenseTest extends TestCase
@@ -208,5 +209,24 @@ class ExpenseTest extends TestCase
             'id' => $account->id,
             'balance' => $newAccountBalance,
         ]);
+    }
+
+    public function test_account_balance_is_less_than_expense_amount_when_restoring()
+    {
+        Exceptions::fake();
+
+        $this->user->givePermissionTo(['expense-restore', 'expense-delete']);
+
+        $expense = Expense::factory()->create();
+
+        $this->delete(route('expenses.destroy', $expense->id));
+
+        $expense->account()->decrement('balance', $expense->account->balance);
+
+        $this->withExceptionHandling()->get(route('expenses.restore', $expense->id));
+
+        Exceptions::assertReported(function (\Exception $ex) {
+            return $ex->getMessage() == 'Could not restore because of Insufficient balance.';
+        });
     }
 }
