@@ -62,7 +62,7 @@ class DepositCategoryController extends Controller
 
     public function restore(int $id): JsonResponse
     {
-        $depositCategory = DepositCategory::withTrashed()->find($id);
+        $depositCategory = DepositCategory::withTrashed()->findOrFail($id);
 
         Gate::authorize('restore', $depositCategory);
 
@@ -75,7 +75,7 @@ class DepositCategoryController extends Controller
 
     public function forceDelete(int $id): JsonResponse
     {
-        $depositCategory = DepositCategory::find($id);
+        $depositCategory = DepositCategory::findOrFail($id);
 
         Gate::authorize('forceDelete', $depositCategory);
 

@@ -57,9 +57,9 @@ class ExpenseCategoryController extends Controller
         return response()->json(['message' => 'Expense category deleted successfully.'], 204);
     }
 
-    public function restore(int $id)
+    public function restore(int $id): JsonResponse
     {
-        $expenseCategory = ExpenseCategory::withTrashed()->find($id);
+        $expenseCategory = ExpenseCategory::withTrashed()->findOrFail($id);
 
         Gate::authorize('restore', $expenseCategory);
 
@@ -68,9 +68,9 @@ class ExpenseCategoryController extends Controller
         return response()->json(['message', 'Expense Category restored successfully']);
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): JsonResponse
     {
-        $expenseCategory = ExpenseCategory::find($id);
+        $expenseCategory = ExpenseCategory::findOrFail($id);
 
         Gate::authorize('forceDelete', $expenseCategory);
 

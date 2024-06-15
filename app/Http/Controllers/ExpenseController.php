@@ -63,9 +63,9 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'Expense deleted successfully.'], 204);
     }
 
-    public function restore(int $id)
+    public function restore(int $id): JsonResponse
     {
-        $expense = Expense::withTrashed()->find($id);
+        $expense = Expense::withTrashed()->findOrFail($id);
 
         Gate::authorize('expense-restore', $expense);
 
@@ -73,6 +73,11 @@ class ExpenseController extends Controller
 
         try {
             $account = $expense->account;
+
+            if (! $account) {
+                throw new \Exception('No account is associated with this expense');
+            }
+
             if ($account->balance < $expense->amount) {
                 throw new Exception('Could not restore because of Insufficient balance.');
             }
@@ -89,9 +94,9 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'Expense restored successfully']);
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): JsonResponse
     {
-        $expense = Expense::withTrashed()->find($id);
+        $expense = Expense::withTrashed()->findOrFail($id);
 
         Gate::authorize('expense-force-delete', $expense);
 

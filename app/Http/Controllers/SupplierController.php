@@ -62,9 +62,9 @@ class SupplierController extends Controller
         return response()->json(['message' => 'Supplier deleted successfully'], 204);
     }
 
-    public function restore(int $id)
+    public function restore(int $id): JsonResponse
     {
-        $supplier = Supplier::withTrashed()->find($id);
+        $supplier = Supplier::withTrashed()->findOrFail($id);
 
         Gate::authorize('restore', $supplier);
 
@@ -73,9 +73,9 @@ class SupplierController extends Controller
         return response()->json(['message' => 'Supplier restored successfully']);
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): JsonResponse
     {
-        $supplier = Supplier::withTrashed()->find($id);
+        $supplier = Supplier::withTrashed()->findOrFail($id);
 
         Gate::authorize('forceDelete', $supplier);
 

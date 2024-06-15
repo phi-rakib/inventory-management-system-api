@@ -7,6 +7,7 @@ use App\Models\UnitType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class UnitTypeController extends Controller
@@ -49,17 +50,19 @@ class UnitTypeController extends Controller
     {
         Gate::authorize('delete', $unitType);
 
-        $unitType->deleted_by = (int) Auth::id();
-        $unitType->save();
+        DB::transaction(function () use ($unitType) {
+            $unitType->deleted_by = (int) Auth::id();
+            $unitType->save();
 
-        $unitType->delete();
+            $unitType->delete();
+        });
 
         return response()->json(['message' => 'Unit type deleted successfully.'], 204);
     }
 
-    public function restore(int $id)
+    public function restore(int $id): JsonResponse
     {
-        $unitType = UnitType::withTrashed()->find($id);
+        $unitType = UnitType::withTrashed()->findOrFail($id);
 
         Gate::authorize('restore', $unitType);
 
@@ -68,9 +71,9 @@ class UnitTypeController extends Controller
         return response()->json(['message' => 'Unit Type restored successfully']);
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): JsonResponse
     {
-        $unitType = UnitType::find($id);
+        $unitType = UnitType::findOrFail($id);
 
         Gate::authorize('forceDelete', $unitType);
 

@@ -55,9 +55,9 @@ class CategoryController extends Controller
         return response()->json(['message' => 'Category deleted successfully.'], 204);
     }
 
-    public function restore(int $id)
+    public function restore(int $id): JsonResponse
     {
-        $category = Category::withTrashed()->find($id);
+        $category = Category::withTrashed()->findOrFail($id);
 
         Gate::authorize('category-restore', $category);
 
@@ -66,9 +66,9 @@ class CategoryController extends Controller
         return response()->json(['message' => 'Category restored succeessfully']);
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): JsonResponse
     {
-        $category = Category::withTrashed()->find($id);
+        $category = Category::withTrashed()->findOrFail($id);
 
         Gate::authorize('category-force-delete', $category);
 

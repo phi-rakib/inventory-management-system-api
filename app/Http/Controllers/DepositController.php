@@ -61,6 +61,10 @@ class DepositController extends Controller
         try {
             $account = $deposit->account;
 
+            if (! $account) {
+                throw new \Exception('No Account is associated with this deposit');
+            }
+
             if ($account->balance < $deposit->amount) {
                 throw new \Exception('Account Balance is less than deposited amount');
             }
@@ -81,9 +85,9 @@ class DepositController extends Controller
         return response()->json(['message' => 'Deposited amount deleted'], 204);
     }
 
-    public function restore(int $id)
+    public function restore(int $id): JsonResponse
     {
-        $deposit = Deposit::withTrashed()->find($id);
+        $deposit = Deposit::withTrashed()->findOrFail($id);
 
         Gate::authorize('restore', $deposit);
 
@@ -96,9 +100,9 @@ class DepositController extends Controller
         return response()->json(['message' => 'Deposit restored successfully']);
     }
 
-    public function forceDelete(int $id)
+    public function forceDelete(int $id): JsonResponse
     {
-        $deposit = Deposit::find($id);
+        $deposit = Deposit::findOrFail($id);
 
         Gate::authorize('forceDelete', $deposit);
 
@@ -106,6 +110,10 @@ class DepositController extends Controller
 
         try {
             $account = $deposit->account;
+
+            if (! $account) {
+                throw new \Exception('No Account is associated with this deposit');
+            }
 
             if ($account->balance < $deposit->amount) {
                 throw new \Exception('Account Balance is less than deposited amount');
