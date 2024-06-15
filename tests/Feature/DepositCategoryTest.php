@@ -117,4 +117,17 @@ class DepositCategoryTest extends TestCase
             'deleted_at' => null,
         ]);
     }
+
+    public function test_user_can_force_delete_depositCategory()
+    {
+        $this->user->givePermissionTo('deposit-category-force-delete');
+
+        $depositCategory = DepositCategory::factory()->create();
+
+        $response = $this->delete(route('depositCategories.forceDelete', $depositCategory->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('deposit_categories', ['id' => $depositCategory->id]);
+    }
 }

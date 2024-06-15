@@ -24,8 +24,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('accounts/restore/{id}', [AccountController::class, 'restore'])->name('accounts.restore');
     Route::delete('accounts/forceDelete/{id}', [AccountController::class, 'forceDelete'])->name('accounts.forceDelete');
     Route::apiResource('accounts', AccountController::class);
-
+    
     Route::get('depositCategories/restore/{id}', [DepositCategoryController::class, 'restore'])->name('depositCategories.restore');
+    Route::delete('depositCategories/forceDelete/{id}', [DepositCategoryController::class, 'forceDelete'])->name('depositCategories.forceDelete');
     Route::apiResource('depositCategories', DepositCategoryController::class);
 
     Route::get('deposits/restore/{id}', [DepositController::class, 'restore'])->name('deposits.restore');
@@ -55,8 +56,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('unitTypes/restore/{id}', [UnitTypeController::class, 'restore'])->name('unitTypes.restore');
     Route::delete('unitTypes/forceDelete/{id}', [UnitTypeController::class, 'forceDelete'])->name('unitTypes.forceDelete');
     Route::apiResource('unitTypes', UnitTypeController::class);
+
     Route::apiResource('attributes', AttributeController::class);
+
     Route::apiResource('attributeValues', AttributeValueController::class);
+
     Route::apiResource('products', ProductController::class);
 
     Route::get('warehouses/restore/{id}', [WarehouseController::class, 'restore'])->name('warehouses.restore');
