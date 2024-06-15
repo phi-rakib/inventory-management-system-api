@@ -65,7 +65,7 @@ class AttributeController extends Controller
 
         Gate::authorize('restore', $attribute);
 
-        DB::transaction(function() use($attribute) {
+        DB::transaction(function () use ($attribute) {
             $attribute->restore();
 
             $attribute->attributeValues()->restore();
@@ -80,7 +80,7 @@ class AttributeController extends Controller
 
         Gate::authorize('forceDelete', $attribute);
 
-        DB::transaction(function() use($attribute) {
+        DB::transaction(function () use ($attribute) {
             $attribute->attributeValues()->forceDelete();
 
             $attribute->forceDelete();

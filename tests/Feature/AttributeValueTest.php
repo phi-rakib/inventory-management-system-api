@@ -120,4 +120,32 @@ class AttributeValueTest extends TestCase
             ],
         ]);
     }
+
+    public function test_user_can_restore_attribute_value()
+    {
+        $this->user->givePermissionTo(['attribute-value-restore', 'attribute-value-delete']);
+
+        $attributeValue = AttributeValue::factory()->create();
+
+        $this->delete(route('attributeValues.destroy', $attributeValue->id));
+
+        $response = $this->get(route('attributeValues.restore', $attributeValue->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('attribute_values', ['id' => $attributeValue->id]);
+    }
+
+    public function test_user_can_force_delete_attribute_value()
+    {
+        $this->user->givePermissionTo('attribute-value-force-delete');
+
+        $attributeValue = AttributeValue::factory()->create();
+
+        $response = $this->delete(route('attributeValues.forceDelete', $attributeValue->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('attribute_values', ['id' => $attributeValue->id]);
+    }
 }

@@ -7,6 +7,7 @@ use App\Http\Requests\StoreAttributeValueRequest;
 use App\Models\AttributeValue;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class AttributeValueController extends Controller
@@ -51,11 +52,31 @@ class AttributeValueController extends Controller
     {
         Gate::authorize('delete', $attributeValue);
 
-        $attributeValue->deleted_by = (int) auth()->id();
-        $attributeValue->save();
+        DB::transaction(function () use ($attributeValue) {
+            $attributeValue->deleted_by = (int) auth()->id();
+            $attributeValue->save();
 
-        $attributeValue->delete();
+            $attributeValue->delete();
+        });
 
         return response()->json(['message' => 'Attribute value deleted successfully.'], 204);
+    }
+
+    public function restore(int $id): JsonResponse
+    {
+        $attributeValue = AttributeValue::withTrashed()->findOrFail($id);
+
+        $attributeValue->restore();
+
+        return response()->json(['message' => 'Attribute value restored successfully']);
+    }
+
+    public function forceDelete(int $id): JsonResponse
+    {
+        $attributeValue = AttributeValue::findOrFail($id);
+
+        $attributeValue->forceDelete();
+
+        return response()->json(['message' => 'Attribute value force deleted successfully'], 204);
     }
 }
