@@ -64,22 +64,18 @@ class AccountController extends Controller
 
         Gate::authorize('restore', $account);
 
-        if ($account) {
-            $account->restore();
-        }
+        $account->restore();
 
         return response()->json(['message' => 'Account restored successfully'], 200);
     }
 
     public function forceDelete(int $id): JsonResponse
     {
-        $account = Account::withTrashed()->find($id);
+        $account = Account::withTrashed()->findOrFail($id);
 
         Gate::authorize('forceDelete', $account);
 
-        if ($account) {
-            $account->forceDelete();
-        }
+        $account->forceDelete();
 
         return response()->json(['message' => 'Account force deleted successfully'], 204);
     }
