@@ -58,4 +58,34 @@ class AttributeController extends Controller
 
         return response()->json(['message' => 'Attribute deleted successfully.'], 204);
     }
+
+    public function restore(int $id): JsonResponse
+    {
+        $attribute = Attribute::withTrashed()->findOrFail($id);
+
+        Gate::authorize('restore', $attribute);
+
+        DB::transaction(function() use($attribute) {
+            $attribute->restore();
+
+            $attribute->attributeValues()->restore();
+        });
+
+        return response()->json(['message' => 'Attribute restored successfully']);
+    }
+
+    public function forceDelete(int $id): JsonResponse
+    {
+        $attribute = Attribute::findOrFail($id);
+
+        Gate::authorize('forceDelete', $attribute);
+
+        DB::transaction(function() use($attribute) {
+            $attribute->attributeValues()->forceDelete();
+
+            $attribute->forceDelete();
+        });
+
+        return response()->json(['message' => 'Attribute force deleted successfully'], 204);
+    }
 }

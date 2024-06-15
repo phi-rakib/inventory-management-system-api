@@ -114,4 +114,52 @@ class AttributeTest extends TestCase
             'name',
         ]);
     }
+
+    public function test_user_can_restore_attribute()
+    {
+        $this->user->givePermissionTo(['attribute-restore', 'attribute-delete']);
+
+        $attribute = Attribute::factory()->hasAttributeValues(2)->create();
+
+        $attributeValues = $attribute->attributeValues;
+
+        $this->delete(route('attributes.destroy', $attribute->id));
+
+        $response = $this->get(route('attributes.restore', $attribute->id));
+
+        $response->assertOk();
+
+        $this->assertDatabaseHas('attributes', [
+            'id' => $attribute->id,
+        ]);
+
+        foreach ($attributeValues as $attributeValue) {
+            $this->assertDatabaseHas('attribute_values', [
+                'id' => $attributeValue->id,
+                'attribute_id' => $attribute->id,
+            ]);
+        }
+    }
+
+    public function test_user_can_force_delete_attribute()
+    {
+        $this->user->givePermissionTo('attribute-force-delete');
+
+        $attribute = Attribute::factory()->hasAttributeValues(2)->create();
+
+        $attributeValues = $attribute->attributeValues;
+
+        $response = $this->delete(route('attributes.forceDelete', $attribute->id));
+
+        $response->assertNoContent();
+
+        $this->assertDatabaseMissing('attributes', ['id' => $attribute->id]);
+
+        foreach ($attributeValues as $attributeValue) {
+            $this->assertDatabaseMissing('attribute_values', [
+                'id' => $attributeValue->id,
+                'attribute_id' => $attribute->id,
+            ]);
+        }
+    }
 }

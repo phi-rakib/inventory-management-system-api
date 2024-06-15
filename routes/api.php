@@ -56,7 +56,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('unitTypes/restore/{id}', [UnitTypeController::class, 'restore'])->name('unitTypes.restore');
     Route::delete('unitTypes/forceDelete/{id}', [UnitTypeController::class, 'forceDelete'])->name('unitTypes.forceDelete');
     Route::apiResource('unitTypes', UnitTypeController::class);
-
+    
+    Route::delete('attributes/forceDelete/{id}', [AttributeController::class, 'forceDelete'])->name('attributes.forceDelete');
+    Route::get('attributes/restore/{id}', [AttributeController::class, 'restore'])->name('attributes.restore');
     Route::apiResource('attributes', AttributeController::class);
 
     Route::apiResource('attributeValues', AttributeValueController::class);
