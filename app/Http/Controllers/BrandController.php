@@ -56,9 +56,9 @@ class BrandController extends Controller
         return response()->json(['message' => 'Brand deleted successfully.'], 204);
     }
 
-    public function restore($id)
+    public function restore(int $id): JsonResponse
     {
-        $brand = Brand::withTrashed()->find($id);
+        $brand = Brand::withTrashed()->findOrFail($id);
 
         Gate::authorize('restore', $brand);
 
@@ -67,9 +67,9 @@ class BrandController extends Controller
         return response()->json(['message' => 'Brand restored successfully']);
     }
 
-    public function forceDelete($id)
+    public function forceDelete(int $id): JsonResponse
     {
-        $brand = Brand::withTrashed()->find($id);
+        $brand = Brand::withTrashed()->findOrFail($id);
 
         Gate::authorize('forceDelete', $brand);
 
