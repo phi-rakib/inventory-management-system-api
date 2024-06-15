@@ -55,7 +55,7 @@ class AccountController extends Controller
         return response()->json(['message' => 'Account deleted successfully'], 204);
     }
 
-    public function restore($id): JsonResponse
+    public function restore(int $id): JsonResponse
     {
         $account = Account::withTrashed()->findOrFail($id);
 
@@ -66,7 +66,7 @@ class AccountController extends Controller
         return response()->json(['message' => 'Account restored successfully'], 200);
     }
 
-    public function forceDelete($id): JsonResponse
+    public function forceDelete(int $id): JsonResponse
     {
         $account = Account::withTrashed()->find($id);
 
