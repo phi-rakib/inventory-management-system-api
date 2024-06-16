@@ -2,18 +2,17 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Product;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class StoreProductRequest extends FormRequest
+class UpdateSupplierRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows('create', Product::class);
+        return Gate::allows('update', $this->supplier);
     }
 
     /**
@@ -24,13 +23,11 @@ class StoreProductRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'category_id' => 'required|integer|exists:categories,id',
-            'brand_id' => 'required|integer|exists:brands,id',
-            'unit_type_id' => 'required|integer|exists:unit_types,id',
             'name' => 'required|max:255',
             'description' => 'nullable',
-            'price' => 'required|numeric',
-            'attributes' => 'array',
+            'address' => 'nullable',
+            'phone' => 'nullable',
+            'account_number' => 'string',
         ];
     }
 }
