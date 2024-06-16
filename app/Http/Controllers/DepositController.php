@@ -87,7 +87,7 @@ class DepositController extends Controller
             }
 
             if ($account->balance < $deposit->amount) {
-                throw new \Exception('Account Balance is less than deposited amount');
+                throw new \Exception('Account Balance is less than the deposited amount');
             }
 
             $account->decrement('balance', $deposit->amount);
@@ -98,12 +98,13 @@ class DepositController extends Controller
             $deposit->delete();
 
             DB::commit();
+
+            return response()->json(['message' => 'Deposited amount deleted'], 204);
         } catch (\Exception $ex) {
             DB::rollBack();
-            throw $ex;
+            
+            return response()->json(['error' => $ex->getMessage()], 400);
         }
-
-        return response()->json(['message' => 'Deposited amount deleted'], 204);
     }
 
     public function restore(int $id): JsonResponse
@@ -137,7 +138,7 @@ class DepositController extends Controller
             }
 
             if ($account->balance < $deposit->amount) {
-                throw new \Exception('Account Balance is less than deposited amount');
+                throw new \Exception('Account Balance is less than the deposited amount');
             }
 
             $account->decrement('balance', $deposit->amount);
@@ -145,11 +146,11 @@ class DepositController extends Controller
             $deposit->forceDelete();
 
             DB::commit();
+
+            return response()->json(['message' => 'Deposit force deleted successfully'], 204);
         } catch (\Exception $ex) {
             DB::rollBack();
-            throw $ex;
+            return response()->json(['error' => $ex->getMessage()], 400);
         }
-
-        return response()->json(['message' => 'Deposit force deleted successfully'], 204);
     }
 }

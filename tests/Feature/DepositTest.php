@@ -84,6 +84,36 @@ class DepositTest extends TestCase
         ]);
     }
 
+    public function test_insufficient_balance_when_update_deposit()
+    {
+        $this->user->givePermissionTo('deposit-edit');
+
+        $deposit = Deposit::factory()->create();
+
+        $account = $deposit->account;
+
+        $deposit->account()->decrement('balance', $account->balance);
+
+        $response = $this->put(route('deposits.update', $deposit->id), [
+            ...$deposit->toArray(),
+            'amount' => 50,
+        ]);
+
+        $response->assertBadRequest();
+
+        $response->assertJson(['error' => 'Account Balance is less than the deposited amount']);
+
+        $this->assertDatabaseHas('deposits', [
+            'id' => $deposit->id,
+            'amount' => $deposit->amount,
+        ]);
+
+        $this->assertDatabaseHas('accounts', [
+            'id' => $account->id,
+            'balance' => 0,
+        ]);
+    }
+
     public function test_user_can_delete_deposit()
     {
         $this->user->givePermissionTo('deposit-delete');
@@ -176,37 +206,37 @@ class DepositTest extends TestCase
         ]);
     }
 
-    public function test_exception_when_account_balance_is_less_than_deposited_amount_in_deposit_force_delete()
+    public function test_account_insufficient_balance_in_deposit_force_delete()
     {
-        Exceptions::fake();
-
         $this->user->givePermissionTo('deposit-force-delete');
 
         $deposit = Deposit::factory()->create();
 
         $deposit->account()->decrement('balance', 10);
 
-        $this->withExceptionHandling()->delete(route('deposits.forceDelete', $deposit->id));
+        $response = $this->withExceptionHandling()->delete(route('deposits.forceDelete', $deposit->id));
 
-        Exceptions::assertReported(function (Exception $e) {
-            return $e->getMessage() == 'Account Balance is less than deposited amount';
-        });
+        $response->assertBadRequest();
+
+        $response->assertJson(['error' => 'Account Balance is less than the deposited amount']);
+
+        $this->assertDatabaseHas('deposits', ['id' => $deposit->id]);
     }
 
-    public function test_exception_when_account_balance_is_less_than_deposited_amount_in_deposit_destroy()
+    public function test_account_insufficient_balance_in_deposit_destroy()
     {
-        Exceptions::fake();
-
         $this->user->givePermissionTo('deposit-delete');
 
         $deposit = Deposit::factory()->create();
 
         $deposit->account()->decrement('balance', 10);
 
-        $this->withExceptionHandling()->delete(route('deposits.destroy', $deposit->id));
+        $response = $this->withExceptionHandling()->delete(route('deposits.destroy', $deposit->id));
 
-        Exceptions::assertReported(function (Exception $ex) {
-            return $ex->getMessage() == 'Account Balance is less than deposited amount';
-        });
+        $response->assertBadRequest();
+
+        $response->assertJson(['error' => 'Account Balance is less than the deposited amount']);
+
+        $this->assertNotSoftDeleted('deposits', ['id' => $deposit->id]);
     }
 }
