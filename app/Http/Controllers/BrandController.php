@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreBrandRequest;
+use App\Http\Requests\UpdateBrandRequest;
 use App\Models\Brand;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -28,17 +29,13 @@ class BrandController extends Controller
 
     public function store(StoreBrandRequest $request): JsonResponse
     {
-        Gate::authorize('create', Brand::class);
-
         Brand::create($request->validated());
 
         return response()->json(['message' => 'Brand created successfully.'], 201);
     }
 
-    public function update(Brand $brand, StoreBrandRequest $request): JsonResponse
+    public function update(UpdateBrandRequest $request, Brand $brand): JsonResponse
     {
-        Gate::authorize('update', $brand);
-
         $brand->update($request->validated());
 
         return response()->json(['message' => 'Brand updated successfully.'], 200);
