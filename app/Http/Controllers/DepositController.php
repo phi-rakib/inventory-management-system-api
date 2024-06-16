@@ -52,6 +52,10 @@ class DepositController extends Controller
         DB::beginTransaction();
 
         try {
+            if (! $deposit->account) {
+                throw new \Exception('Account Not Found');
+            }
+
             $updatedBalance = $deposit->account->balance + $request->amount - $deposit->amount;
 
             if ($updatedBalance < 0) {
