@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreWarehouseRequest;
+use App\Http\Requests\UpdateWarehouseRequest;
 use App\Models\Warehouse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class WarehouseController extends Controller
@@ -32,17 +34,13 @@ class WarehouseController extends Controller
 
     public function store(StoreWarehouseRequest $request): JsonResponse
     {
-        Gate::authorize('create', Warehouse::class);
-
         Warehouse::create($request->validated());
 
         return response()->json(['message' => 'Warehouse created successfully'], 201);
     }
 
-    public function update(StoreWarehouseRequest $request, Warehouse $warehouse): JsonResponse
+    public function update(UpdateWarehouseRequest $request, Warehouse $warehouse): JsonResponse
     {
-        Gate::authorize('update', $warehouse);
-
         $warehouse->update($request->validated());
 
         return response()->json(['message' => 'Warehouse updated successfully']);
@@ -52,10 +50,12 @@ class WarehouseController extends Controller
     {
         Gate::authorize('delete', $warehouse);
 
-        $warehouse->deleted_by = (int) auth()->id();
-        $warehouse->save();
+        DB::transaction(function () use ($warehouse) {
+            $warehouse->deleted_by = (int) auth()->id();
+            $warehouse->save();
 
-        $warehouse->delete();
+            $warehouse->delete();
+        });
 
         return response()->json(['message' => 'Warehouse deleted successfully'], 204);
     }
