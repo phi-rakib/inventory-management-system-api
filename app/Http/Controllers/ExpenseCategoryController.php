@@ -3,10 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreExpenseCategoryRequest;
+use App\Http\Requests\UpdateExpenseCategoryRequest;
 use App\Models\ExpenseCategory;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class ExpenseCategoryController extends Controller
@@ -29,18 +30,14 @@ class ExpenseCategoryController extends Controller
 
     public function store(StoreExpenseCategoryRequest $request): JsonResponse
     {
-        Gate::authorize('create', ExpenseCategory::class);
-
         ExpenseCategory::create($request->validated());
 
         return response()->json(['message' => 'Expense category created successfully.'], 201);
     }
 
-    public function update(Request $request, ExpenseCategory $expenseCategory): JsonResponse
+    public function update(UpdateExpenseCategoryRequest $request, ExpenseCategory $expenseCategory): JsonResponse
     {
-        Gate::authorize('update', $expenseCategory);
-
-        $expenseCategory->update($request->only(['name', 'description', 'status']));
+        $expenseCategory->update($request->validated());
 
         return response()->json(['message' => 'Expense category updated successfully.']);
     }
@@ -49,10 +46,12 @@ class ExpenseCategoryController extends Controller
     {
         Gate::authorize('delete', $expenseCategory);
 
-        $expenseCategory->deleted_by = (int) auth()->id();
-        $expenseCategory->save();
+        DB::transaction(function () use ($expenseCategory) {
+            $expenseCategory->deleted_by = (int) auth()->id();
+            $expenseCategory->save();
 
-        $expenseCategory->delete();
+            $expenseCategory->delete();
+        });
 
         return response()->json(['message' => 'Expense category deleted successfully.'], 204);
     }
