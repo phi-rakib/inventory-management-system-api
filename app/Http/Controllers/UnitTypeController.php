@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreUnitTypeRequest;
+use App\Http\Requests\UpdateUnitTypeRequest;
 use App\Models\UnitType;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -30,17 +31,13 @@ class UnitTypeController extends Controller
 
     public function store(StoreUnitTypeRequest $request): JsonResponse
     {
-        Gate::authorize('create', UnitType::class);
-
         UnitType::create($request->validated());
 
         return response()->json(['message' => 'Unit type created successfully.'], 201);
     }
 
-    public function update(StoreUnitTypeRequest $request, UnitType $unitType): JsonResponse
+    public function update(UpdateUnitTypeRequest $request, UnitType $unitType): JsonResponse
     {
-        Gate::authorize('update', $unitType);
-
         $unitType->update($request->validated());
 
         return response()->json(['message' => 'Unit type updated successfully.']);

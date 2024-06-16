@@ -42,6 +42,7 @@ class ExpenseTest extends TestCase
         $expense = Expense::factory()->create();
 
         $response = $this->put(route('expenses.update', $expense->id), [
+            ...$expense->toArray(),
             'name' => 'Updated Name',
         ]);
 

@@ -117,6 +117,7 @@ class SupplierTest extends TestCase
         $supplier = Supplier::factory()->create();
 
         $response = $this->put(route('suppliers.update', $supplier), [
+            ...$supplier->toArray(),
             'name' => 'Updated Name',
             'account_number' => $supplier->account->account_number,
         ]);

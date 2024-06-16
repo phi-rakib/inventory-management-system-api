@@ -2,7 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\DepositCategoryRequest;
+use App\Http\Requests\StoreDepositCategoryRequest;
+use App\Http\Requests\UpdateDepositCategoryRequest;
 use App\Models\DepositCategory;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -24,7 +25,7 @@ class DepositCategoryController extends Controller
         return $depositCategory;
     }
 
-    public function store(DepositCategoryRequest $request): JsonResponse
+    public function store(StoreDepositCategoryRequest $request): JsonResponse
     {
         Gate::authorize('create', DepositCategory::class);
 
@@ -35,7 +36,7 @@ class DepositCategoryController extends Controller
         ], 201);
     }
 
-    public function update(DepositCategoryRequest $request, DepositCategory $depositCategory): JsonResponse
+    public function update(UpdateDepositCategoryRequest $request, DepositCategory $depositCategory): JsonResponse
     {
         Gate::authorize('update', $depositCategory);
 

@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Expense;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class StoreExpenseRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class StoreExpenseRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return Gate::allows('create', Expense::class);
     }
 
     /**

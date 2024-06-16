@@ -2,8 +2,9 @@
 
 namespace App\Http\Requests;
 
+use App\Models\UnitType;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
 class StoreUnitTypeRequest extends FormRequest
 {
@@ -12,7 +13,7 @@ class StoreUnitTypeRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return Gate::allows('create', UnitType::class);
     }
 
     /**

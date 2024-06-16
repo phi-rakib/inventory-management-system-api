@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSupplierRequest;
+use App\Http\Requests\UpdateSupplierRequest;
 use App\Models\Supplier;
 use App\Services\SupplierService;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
@@ -33,22 +33,14 @@ class SupplierController extends Controller
 
     public function store(StoreSupplierRequest $request): JsonResponse
     {
-        Gate::authorize('create', Supplier::class);
-
-        $validatedData = $request->validated();
-
-        $this->supplierService->store($validatedData);
+        $this->supplierService->store($request->validated());
 
         return response()->json(['message' => 'Supplier created successfully'], 201);
     }
 
-    public function update(Request $request, Supplier $supplier): JsonResponse
+    public function update(UpdateSupplierRequest $request, Supplier $supplier): JsonResponse
     {
-        Gate::authorize('update', $supplier);
-
-        $data = $request->all();
-
-        $this->supplierService->update($supplier, $data);
+        $this->supplierService->update($supplier, $request->validated());
 
         return response()->json(['message' => 'Supplier updated successfully'], 200);
     }

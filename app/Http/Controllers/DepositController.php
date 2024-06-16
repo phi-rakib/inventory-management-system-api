@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreDepositRequest;
+use App\Http\Requests\UpdateDepositRequest;
 use App\Models\Deposit;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -36,20 +36,45 @@ class DepositController extends Controller
 
     public function store(StoreDepositRequest $request): JsonResponse
     {
-        Gate::authorize('create', Deposit::class);
+        $payload = $request->validated();
 
-        $deposit = Deposit::create($request->validated());
+        DB::transaction(function () use ($payload) {
+            $deposit = Deposit::create($payload);
 
-        return response()->json(['message' => "$deposit->amount Deposited in account $deposit->account->name"], 201);
+            $deposit->account()->increment('balance', $deposit->amount);
+        });
+
+        return response()->json(['message' => 'Amount Deposited Successfully'], 201);
     }
 
-    public function update(Deposit $deposit, Request $request): JsonResponse
+    public function update(UpdateDepositRequest $request, Deposit $deposit): JsonResponse
     {
-        Gate::authorize('update', $deposit);
+        DB::beginTransaction();
 
-        $deposit->update($request->all());
+        try {
+            if (! $deposit->account) {
+                throw new \Exception('Account Not Found');
+            }
 
-        return response()->json(['message' => 'Deposit updated']);
+            $updatedBalance = $deposit->account->balance + $request->amount - $deposit->amount;
+
+            if ($updatedBalance < 0) {
+                throw new \Exception('Account Balance is less than the deposited amount');
+            }
+
+            $deposit->account()->update(['balance' => $updatedBalance]);
+
+            $deposit->update($request->validated());
+
+            DB::commit();
+
+            return response()->json(['message' => 'Deposit updated']);
+
+        } catch (\Exception $ex) {
+            DB::rollBack();
+
+            return response()->json(['error' => $ex->getMessage()], 400);
+        }
     }
 
     public function destroy(Deposit $deposit): JsonResponse
@@ -66,7 +91,7 @@ class DepositController extends Controller
             }
 
             if ($account->balance < $deposit->amount) {
-                throw new \Exception('Account Balance is less than deposited amount');
+                throw new \Exception('Account Balance is less than the deposited amount');
             }
 
             $account->decrement('balance', $deposit->amount);
@@ -77,12 +102,13 @@ class DepositController extends Controller
             $deposit->delete();
 
             DB::commit();
+
+            return response()->json(['message' => 'Deposited amount deleted'], 204);
         } catch (\Exception $ex) {
             DB::rollBack();
-            throw $ex;
-        }
 
-        return response()->json(['message' => 'Deposited amount deleted'], 204);
+            return response()->json(['error' => $ex->getMessage()], 400);
+        }
     }
 
     public function restore(int $id): JsonResponse
@@ -116,7 +142,7 @@ class DepositController extends Controller
             }
 
             if ($account->balance < $deposit->amount) {
-                throw new \Exception('Account Balance is less than deposited amount');
+                throw new \Exception('Account Balance is less than the deposited amount');
             }
 
             $account->decrement('balance', $deposit->amount);
@@ -124,11 +150,12 @@ class DepositController extends Controller
             $deposit->forceDelete();
 
             DB::commit();
+
+            return response()->json(['message' => 'Deposit force deleted successfully'], 204);
         } catch (\Exception $ex) {
             DB::rollBack();
-            throw $ex;
-        }
 
-        return response()->json(['message' => 'Deposit force deleted successfully'], 204);
+            return response()->json(['error' => $ex->getMessage()], 400);
+        }
     }
 }

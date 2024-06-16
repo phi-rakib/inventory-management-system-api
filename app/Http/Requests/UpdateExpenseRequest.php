@@ -2,18 +2,17 @@
 
 namespace App\Http\Requests;
 
-use App\Models\AttributeValue;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class StoreAttributeValueRequest extends FormRequest
+class UpdateExpenseRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows('create', AttributeValue::class);
+        return Gate::allows('update', $this->expense);
     }
 
     /**
@@ -25,8 +24,12 @@ class StoreAttributeValueRequest extends FormRequest
     {
         return [
             'name' => 'required',
+            'expense_category_id' => 'required|integer|exists:expense_categories,id',
+            'account_id' => 'required|integer|exists:accounts,id',
+            'payment_method_id' => 'required|integer|exists:payment_methods,id',
+            'expense_date' => 'required|date',
+            'amount' => 'required|numeric',
             'description' => 'nullable',
-            'attribute_id' => 'required|integer|exists:attributes,id',
         ];
     }
 }

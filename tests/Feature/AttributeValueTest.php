@@ -45,6 +45,7 @@ class AttributeValueTest extends TestCase
 
         $response = $this->put(route('attributeValues.update', $attributeValue->id), [
             'name' => 'test',
+            'attribute_id' => $attributeValue->attribute_id,
         ]);
 
         $response->assertStatus(200);

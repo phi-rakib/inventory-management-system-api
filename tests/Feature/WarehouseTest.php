@@ -44,6 +44,7 @@ class WarehouseTest extends TestCase
         $warehouse = Warehouse::factory()->create();
 
         $response = $this->put(route('warehouses.update', $warehouse), [
+            ...$warehouse->toArray(),
             'name' => 'Updated Warehouse',
         ]);
 

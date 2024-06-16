@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAdjustmentRequest;
+use App\Http\Requests\UpdateAdjustmentRequest;
 use App\Models\Adjustment;
 use App\Services\AdjustmentService;
 use Illuminate\Http\JsonResponse;
@@ -32,17 +33,13 @@ class AdjustmentController extends Controller
 
     public function store(StoreAdjustmentRequest $request): JsonResponse
     {
-        Gate::authorize('create', Adjustment::class);
-
         $this->adjustmentService->store($request->validated());
 
         return response()->json(['message' => 'Adjustment created successfully'], 201);
     }
 
-    public function update(StoreAdjustmentRequest $request, Adjustment $adjustment): JsonResponse
+    public function update(UpdateAdjustmentRequest $request, Adjustment $adjustment): JsonResponse
     {
-        Gate::authorize('update', $adjustment);
-
         $this->adjustmentService->update($request, $adjustment);
 
         return response()->json(['message' => 'Adjustment updated successfully'], 200);

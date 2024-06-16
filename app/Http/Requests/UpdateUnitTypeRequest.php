@@ -3,16 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
-class PaymentMethodRequest extends FormRequest
+class UpdateUnitTypeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return Gate::allows('update', $this->unitType);
     }
 
     /**
@@ -23,7 +23,8 @@ class PaymentMethodRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
+            'name' => ['required', 'string', 'max:255'],
+            'description' => ['nullable', 'string'],
         ];
     }
 }

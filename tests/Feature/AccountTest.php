@@ -47,6 +47,7 @@ class AccountTest extends TestCase
 
         $response = $this->put(route('accounts.update', $account->id), [
             'name' => 'updated name',
+            'status' => 'active',
         ]);
 
         $response->assertStatus(200);

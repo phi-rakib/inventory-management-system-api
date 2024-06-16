@@ -2,18 +2,17 @@
 
 namespace App\Http\Requests;
 
-use App\Models\AttributeValue;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class StoreAttributeValueRequest extends FormRequest
+class UpdatePaymentMethodRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows('create', AttributeValue::class);
+        return Gate::allows('update', $this->paymentMethod);
     }
 
     /**
@@ -25,8 +24,6 @@ class StoreAttributeValueRequest extends FormRequest
     {
         return [
             'name' => 'required',
-            'description' => 'nullable',
-            'attribute_id' => 'required|integer|exists:attributes,id',
         ];
     }
 }

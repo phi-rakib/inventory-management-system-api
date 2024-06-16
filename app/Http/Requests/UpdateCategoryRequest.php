@@ -2,18 +2,17 @@
 
 namespace App\Http\Requests;
 
-use App\Models\AttributeValue;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class StoreAttributeValueRequest extends FormRequest
+class UpdateCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows('create', AttributeValue::class);
+        return Gate::allows('update', $this->category);
     }
 
     /**
@@ -24,9 +23,7 @@ class StoreAttributeValueRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required',
-            'description' => 'nullable',
-            'attribute_id' => 'required|integer|exists:attributes,id',
+            'name' => 'required|string|max:255',
         ];
     }
 }

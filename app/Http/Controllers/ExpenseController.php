@@ -3,10 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreExpenseRequest;
+use App\Http\Requests\UpdateExpenseRequest;
 use App\Models\Expense;
 use Exception;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -31,18 +31,14 @@ class ExpenseController extends Controller
 
     public function store(StoreExpenseRequest $request): JsonResponse
     {
-        Gate::authorize('create', Expense::class);
-
         Expense::create($request->validated());
 
         return response()->json(['message' => 'Expense created successfully.'], 201);
     }
 
-    public function update(Request $request, Expense $expense): JsonResponse
+    public function update(UpdateExpenseRequest $request, Expense $expense): JsonResponse
     {
-        Gate::authorize('update', $expense);
-
-        $expense->update($request->all());
+        $expense->update($request->validated());
 
         return response()->json(['message' => 'Expense updated successfully.'], 200);
     }
