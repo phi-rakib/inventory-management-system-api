@@ -3,16 +3,16 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Gate;
 
-class DepositCategoryRequest extends FormRequest
+class UpdateDepositCategoryRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Auth::check();
+        return Gate::allows('update', $this->depositCategory);
     }
 
     /**
