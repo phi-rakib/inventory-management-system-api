@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\StoreProductRequest;
 use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
-use App\Service\ProductService;
+use App\Services\ProductService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
