@@ -2,18 +2,17 @@
 
 namespace App\Http\Requests;
 
-use App\Models\Attribute;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Support\Facades\Gate;
 
-class StoreAttributeRequest extends FormRequest
+class UpdateAttributeRequest extends FormRequest
 {
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return Gate::allows('create', Attribute::class);
+        return Gate::allows('update', $this->attribute);
     }
 
     /**
