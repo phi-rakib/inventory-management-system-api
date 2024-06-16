@@ -3,9 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAccountRequest;
+use App\Http\Requests\UpdateAccountRequest;
 use App\Models\Account;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
@@ -28,18 +28,14 @@ class AccountController extends Controller
 
     public function store(StoreAccountRequest $request): JsonResponse
     {
-        Gate::authorize('create', Account::class);
-
         Account::create($request->validated());
 
         return response()->json(['message' => 'Account created successfully'], 201);
     }
 
-    public function update(Request $request, Account $account): JsonResponse
+    public function update(UpdateAccountRequest $request, Account $account): JsonResponse
     {
-        Gate::authorize('update', $account);
-
-        $account->update($request->only(['name', 'description', 'status']));
+        $account->update($request->validated());
 
         return response()->json(['message' => 'Account updated successfully'], 200);
     }
