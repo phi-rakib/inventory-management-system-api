@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreCategoryRequest;
+use App\Http\Requests\UpdateCategoryRequest;
 use App\Models\Category;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
@@ -27,17 +28,13 @@ class CategoryController extends Controller
 
     public function store(StoreCategoryRequest $request): JsonResponse
     {
-        Gate::authorize('create', Category::class);
-
         Category::create($request->validated());
 
         return response()->json(['message' => 'Category created successfully.'], 201);
     }
 
-    public function update(StoreCategoryRequest $request, Category $category): JsonResponse
+    public function update(UpdateCategoryRequest $request, Category $category): JsonResponse
     {
-        Gate::authorize('update', $category);
-
         $category->update($request->validated());
 
         return response()->json(['message' => 'Category updated successfully.']);
