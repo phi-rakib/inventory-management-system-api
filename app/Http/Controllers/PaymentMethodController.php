@@ -2,11 +2,12 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\PaymentMethodRequest;
+use App\Http\Requests\StorePaymentMethodRequest;
+use App\Http\Requests\UpdatePaymentMethodRequest;
 use App\Models\PaymentMethod;
 use Illuminate\Http\JsonResponse;
-use Illuminate\Http\Request;
 use Illuminate\Pagination\LengthAwarePaginator;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
 class PaymentMethodController extends Controller
@@ -25,20 +26,16 @@ class PaymentMethodController extends Controller
         return $paymentMethod;
     }
 
-    public function store(PaymentMethodRequest $request): JsonResponse
+    public function store(StorePaymentMethodRequest $request): JsonResponse
     {
-        Gate::authorize('create', PaymentMethod::class);
-
         PaymentMethod::create($request->validated());
 
         return response()->json(['message' => 'Payment method created'], 201);
     }
 
-    public function update(Request $request, PaymentMethod $paymentMethod): JsonResponse
+    public function update(UpdatePaymentMethodRequest $request, PaymentMethod $paymentMethod): JsonResponse
     {
-        Gate::authorize('update', $paymentMethod);
-
-        $paymentMethod->update($request->only(['name']));
+        $paymentMethod->update($request->validated());
 
         return response()->json(['message' => 'Payment method updated']);
     }
@@ -47,10 +44,12 @@ class PaymentMethodController extends Controller
     {
         Gate::authorize('delete', $paymentMethod);
 
-        $paymentMethod->deleted_by = (int) auth()->id();
-        $paymentMethod->save();
+        DB::transaction(function () use ($paymentMethod) {
+            $paymentMethod->deleted_by = (int) auth()->id();
+            $paymentMethod->save();
 
-        $paymentMethod->delete();
+            $paymentMethod->delete();
+        });
 
         return response()->json(['message' => 'Payment method deleted'], 204);
     }
