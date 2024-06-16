@@ -82,7 +82,7 @@ class DepositController extends Controller
         try {
             $account = $deposit->account;
 
-            if (!$account) {
+            if (! $account) {
                 throw new \Exception('No Account is associated with this deposit');
             }
 
@@ -102,7 +102,7 @@ class DepositController extends Controller
             return response()->json(['message' => 'Deposited amount deleted'], 204);
         } catch (\Exception $ex) {
             DB::rollBack();
-            
+
             return response()->json(['error' => $ex->getMessage()], 400);
         }
     }
@@ -133,7 +133,7 @@ class DepositController extends Controller
         try {
             $account = $deposit->account;
 
-            if (!$account) {
+            if (! $account) {
                 throw new \Exception('No Account is associated with this deposit');
             }
 
@@ -150,6 +150,7 @@ class DepositController extends Controller
             return response()->json(['message' => 'Deposit force deleted successfully'], 204);
         } catch (\Exception $ex) {
             DB::rollBack();
+
             return response()->json(['error' => $ex->getMessage()], 400);
         }
     }

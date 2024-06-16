@@ -5,10 +5,8 @@ namespace Tests\Feature;
 use App\Models\Account;
 use App\Models\Deposit;
 use App\Models\User;
-use Exception;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Exceptions;
 use Tests\TestCase;
 
 class DepositTest extends TestCase
@@ -55,7 +53,7 @@ class DepositTest extends TestCase
         $account = Account::factory()->create(['balance' => 1000]);
         $deposit = Deposit::factory()->make([
             'account_id' => $account->id,
-            'amount' => 100
+            'amount' => 100,
         ]);
 
         $this->post(route('deposits.store'), $deposit->toArray());
@@ -67,7 +65,7 @@ class DepositTest extends TestCase
             ...$deposit->toArray(),
             'amount' => $updatedAmount,
         ];
-        
+
         $response = $this->put(route('deposits.update', $depositId), $updatedData);
 
         $response->assertOk();
