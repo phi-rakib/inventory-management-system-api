@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Account;
 use App\Models\Deposit;
 use App\Models\User;
 use Exception;
@@ -23,42 +24,63 @@ class DepositTest extends TestCase
         $this->user = Auth::user();
     }
 
-    public function test_user_can_deposit()
+    public function test_user_can_create_deposit()
     {
         $this->user->givePermissionTo('deposit-create');
 
         $deposit = Deposit::factory()->make();
 
+        $account = $deposit->account;
+
         $response = $this->post(route('deposits.store'), $deposit->toArray());
 
-        $response->assertStatus(201);
-
-        $response->assertJson([
-            'message' => "$deposit->amount Deposited in account $deposit->account->name",
-        ]);
+        $response->assertCreated();
 
         $this->assertDatabaseHas('deposits', [
             'account_id' => $deposit->account_id,
             'amount' => $deposit->amount,
             'deposit_date' => $deposit->deposit_date,
         ]);
+
+        $this->assertDatabaseHas('accounts', [
+            'id' => $deposit->account_id,
+            'balance' => $account->balance + $deposit->amount,
+        ]);
     }
 
     public function test_user_can_update_deposit()
     {
-        $this->user->givePermissionTo('deposit-edit');
+        $this->user->givePermissionTo(['deposit-edit', 'deposit-create']);
 
-        $deposit = Deposit::factory()->create();
-
-        $response = $this->put(route('deposits.update', $deposit), [
-            'amount' => 5000,
+        $account = Account::factory()->create(['balance' => 1000]);
+        $deposit = Deposit::factory()->make([
+            'account_id' => $account->id,
+            'amount' => 100
         ]);
 
-        $response->assertStatus(200);
+        $this->post(route('deposits.store'), $deposit->toArray());
+
+        $depositId = Deposit::first()->id;
+
+        $updatedAmount = 150;
+        $updatedData = [
+            ...$deposit->toArray(),
+            'amount' => $updatedAmount,
+        ];
+        
+        $response = $this->put(route('deposits.update', $depositId), $updatedData);
+
+        $response->assertOk();
+        $response->assertJson(['message' => 'Deposit updated']);
 
         $this->assertDatabaseHas('deposits', [
-            'id' => $deposit->id,
-            'amount' => 5000,
+            'id' => $depositId,
+            'amount' => $updatedAmount,
+        ]);
+
+        $this->assertDatabaseHas('accounts', [
+            'id' => $account->id,
+            'balance' => $account->balance + $updatedAmount,
         ]);
     }
 
