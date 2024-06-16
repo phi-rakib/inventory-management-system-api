@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreProductRequest;
+use App\Http\Requests\UpdateProductRequest;
 use App\Models\Product;
 use App\Service\ProductService;
 use Illuminate\Http\JsonResponse;
@@ -32,17 +33,13 @@ class ProductController extends Controller
 
     public function store(StoreProductRequest $request): JsonResponse
     {
-        Gate::authorize('create', Product::class);
-
         $this->productService->store($request->validated());
 
         return response()->json(['message' => 'Product created successfully'], 201);
     }
 
-    public function update(StoreProductRequest $request, Product $product): JsonResponse
+    public function update(UpdateProductRequest $request, Product $product): JsonResponse
     {
-        Gate::authorize('update', $product);
-
         $this->productService->update($request->validated(), $product);
 
         return response()->json(['message' => 'Product updated successfully'], 200);
