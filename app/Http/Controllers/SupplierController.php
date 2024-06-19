@@ -14,10 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 class SupplierController extends Controller
 {
-    public function __construct(private SupplierService $supplierService)
-    {
-
-    }
+    public function __construct(private SupplierService $supplierService) {}
 
     public function index(): LengthAwarePaginator
     {
