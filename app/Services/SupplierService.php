@@ -48,13 +48,11 @@ class SupplierService
      */
     private function createAccount(array $validatedData, User $user): Account
     {
-        $account = $user->account()->create([
+        return $user->account()->create([
             'name' => $validatedData['name'],
             'account_number' => $validatedData['account_number'] ?? $validatedData['name'].'0001',
             'balance' => 0,
         ]);
-
-        return $account;
     }
 
     /**
@@ -62,7 +60,7 @@ class SupplierService
      */
     private function createSupplier(array $validatedData, User $user, Account $account): Supplier
     {
-        $supplier = $account->supplier()->create([
+        return $account->supplier()->create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'description' => $validatedData['description'],
@@ -70,8 +68,6 @@ class SupplierService
             'phone' => $validatedData['phone'],
             'user_id' => $user->id,
         ]);
-
-        return $supplier;
     }
 
     /**
