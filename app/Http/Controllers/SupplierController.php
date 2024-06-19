@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreSupplierRequest;
@@ -12,10 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 class SupplierController extends Controller
 {
-    public function __construct(private SupplierService $supplierService)
-    {
-
-    }
+    public function __construct(private SupplierService $supplierService) {}
 
     public function index(): LengthAwarePaginator
     {

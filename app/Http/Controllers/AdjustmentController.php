@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace App\Http\Controllers;
 
 use App\Http\Requests\StoreAdjustmentRequest;
@@ -12,10 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 class AdjustmentController extends Controller
 {
-    public function __construct(private AdjustmentService $adjustmentService)
-    {
-
-    }
+    public function __construct(private AdjustmentService $adjustmentService) {}
 
     public function index(): LengthAwarePaginator
     {
