@@ -14,7 +14,7 @@ class ProductService
      */
     public function store(array $productData): void
     {
-        DB::transaction(function () use ($productData) {
+        DB::transaction(function () use ($productData): void {
             $product = Product::create($productData);
 
             $product->prices()->create([
@@ -30,8 +30,7 @@ class ProductService
      */
     public function update(array $productData, Product $product): void
     {
-        DB::transaction(function () use ($productData, $product) {
-
+        DB::transaction(function () use ($productData, $product): void {
             $product->update($productData);
 
             $product->attributes()->sync($productData['attributes']);
@@ -48,7 +47,7 @@ class ProductService
 
     public function destroy(Product $product): void
     {
-        DB::transaction(function () use ($product) {
+        DB::transaction(function () use ($product): void {
             $product->deleted_by = (int) auth()->id();
             $product->save();
 

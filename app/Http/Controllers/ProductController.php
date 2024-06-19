@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Gate;
 
 class ProductController extends Controller
 {
-    public function __construct(private ProductService $productService) {}
+    public function __construct(private ProductService $productService)
+    {
+    }
 
     public function index(): LengthAwarePaginator
     {

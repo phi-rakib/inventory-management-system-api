@@ -17,14 +17,38 @@ class SupplierService
      */
     public function store(array $validatedData): void
     {
-        DB::transaction(function () use ($validatedData) {
-
+        DB::transaction(function () use ($validatedData): void {
             $user = $this->createUser($validatedData);
 
             $account = $this->createAccount($validatedData, $user);
 
             $this->createSupplier($validatedData, $user, $account);
         });
+    }
+
+    /**
+     * @param  array<string, string>  $data
+     */
+    public function update(Supplier $supplier, array $data): void
+    {
+        DB::transaction(function () use ($supplier, $data): void {
+            $supplier->update($data);
+
+            $supplier->user()->update([
+                'name' => $data['name'],
+            ]);
+
+            $supplier->account()->update([
+                'name' => $data['name'],
+                'account_number' => $data['account_number'],
+            ]);
+        });
+    }
+
+    public function destroy(Supplier $supplier): void
+    {
+        $supplier->account()->update(['status' => 'inactive']);
+        $supplier->delete();
     }
 
     /**
@@ -68,30 +92,5 @@ class SupplierService
             'phone' => $validatedData['phone'],
             'user_id' => $user->id,
         ]);
-    }
-
-    /**
-     * @param  array<string, string>  $data
-     */
-    public function update(Supplier $supplier, array $data): void
-    {
-        DB::transaction(function () use ($supplier, $data) {
-            $supplier->update($data);
-
-            $supplier->user()->update([
-                'name' => $data['name'],
-            ]);
-
-            $supplier->account()->update([
-                'name' => $data['name'],
-                'account_number' => $data['account_number'],
-            ]);
-        });
-    }
-
-    public function destroy(Supplier $supplier): void
-    {
-        $supplier->account()->update(['status' => 'inactive']);
-        $supplier->delete();
     }
 }

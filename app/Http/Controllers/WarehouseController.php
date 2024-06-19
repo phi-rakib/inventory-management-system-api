@@ -52,7 +52,7 @@ class WarehouseController extends Controller
     {
         Gate::authorize('delete', $warehouse);
 
-        DB::transaction(function () use ($warehouse) {
+        DB::transaction(function () use ($warehouse): void {
             $warehouse->deleted_by = (int) auth()->id();
             $warehouse->save();
 

@@ -47,7 +47,7 @@ class UnitTypeController extends Controller
     {
         Gate::authorize('delete', $unitType);
 
-        DB::transaction(function () use ($unitType) {
+        DB::transaction(function () use ($unitType): void {
             $unitType->deleted_by = (int) Auth::id();
             $unitType->save();
 

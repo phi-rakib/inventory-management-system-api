@@ -46,7 +46,7 @@ class ExpenseCategoryController extends Controller
     {
         Gate::authorize('delete', $expenseCategory);
 
-        DB::transaction(function () use ($expenseCategory) {
+        DB::transaction(function () use ($expenseCategory): void {
             $expenseCategory->deleted_by = (int) auth()->id();
             $expenseCategory->save();
 

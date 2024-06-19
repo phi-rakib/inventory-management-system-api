@@ -46,7 +46,7 @@ class PaymentMethodController extends Controller
     {
         Gate::authorize('delete', $paymentMethod);
 
-        DB::transaction(function () use ($paymentMethod) {
+        DB::transaction(function () use ($paymentMethod): void {
             $paymentMethod->deleted_by = (int) auth()->id();
             $paymentMethod->save();
 
