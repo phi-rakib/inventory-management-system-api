@@ -11,11 +11,6 @@ use Illuminate\Support\Facades\DB;
 
 class AdjustmentService
 {
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * @param  array<string, mixed>  $data
      */
