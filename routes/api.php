@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 use App\Http\Controllers\AccountController;
 use App\Http\Controllers\AdjustmentController;
 use App\Http\Controllers\AttributeController;
@@ -20,7 +22,7 @@ use Illuminate\Support\Facades\Route;
 
 Route::post('login', [AuthController::class, 'login'])->name('login');
 
-Route::middleware(['auth:sanctum'])->group(function () {
+Route::middleware(['auth:sanctum'])->group(function (): void {
     Route::get('accounts/restore/{id}', [AccountController::class, 'restore'])->name('accounts.restore');
     Route::delete('accounts/forceDelete/{id}', [AccountController::class, 'forceDelete'])->name('accounts.forceDelete');
     Route::apiResource('accounts', AccountController::class);
