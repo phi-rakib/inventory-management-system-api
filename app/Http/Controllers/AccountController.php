@@ -46,7 +46,7 @@ class AccountController extends Controller
     {
         Gate::authorize('delete', $account);
 
-        DB::transaction(function () use ($account) {
+        DB::transaction(function () use ($account): void {
             $account->deleted_by = (int) auth()->id();
             $account->save();
 

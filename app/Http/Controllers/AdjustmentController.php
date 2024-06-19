@@ -14,7 +14,9 @@ use Illuminate\Support\Facades\Gate;
 
 class AdjustmentController extends Controller
 {
-    public function __construct(private AdjustmentService $adjustmentService) {}
+    public function __construct(private AdjustmentService $adjustmentService)
+    {
+    }
 
     public function index(): LengthAwarePaginator
     {
