@@ -83,7 +83,7 @@ class AdjustmentService
             $update = [];
             foreach ($adjustments as $product) {
                 $productId = $product['product_id'];
-                $updatedQuantity = $product['type'] == 'addition' ? $product['quantity'] : (-1) * $product['quantity'];
+                $updatedQuantity = $product['type'] === 'addition' ? $product['quantity'] : (-1) * $product['quantity'];
                 $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
             }
             Warehouse::findOrFail($adjustment->warehouse_id)->products()->sync($update);
@@ -110,7 +110,7 @@ class AdjustmentService
 
             $update = [];
             foreach ($adjustedProducts as $productId => $product) {
-                $updatedQuantity = $product['type'] == 'subtraction' ? $product['quantity'] : (-1) * $product['quantity'];
+                $updatedQuantity = $product['type'] === 'subtraction' ? $product['quantity'] : (-1) * $product['quantity'];
                 $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
             }
 
