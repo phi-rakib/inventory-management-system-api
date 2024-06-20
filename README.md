@@ -3,6 +3,7 @@
 [![Tests](https://github.com/phi-rakib/inventory-management-system-api/actions/workflows/run-tests.yml/badge.svg)](https://github.com/phi-rakib/inventory-management-system-api/actions/workflows/run-tests.yml)
 [![Lint](https://github.com/phi-rakib/inventory-management-system-api/actions/workflows/lint.yml/badge.svg)](https://github.com/phi-rakib/inventory-management-system-api/actions/workflows/lint.yml)
 [![Larastan](https://github.com/phi-rakib/inventory-management-system-api/actions/workflows/larastan.yml/badge.svg)](https://github.com/phi-rakib/inventory-management-system-api/actions/workflows/larastan.yml)
+[![PHP Insights](https://github.com/phi-rakib/inventory-management-system-api/actions/workflows/php-insights.yml/badge.svg)](https://github.com/phi-rakib/inventory-management-system-api/actions/workflows/php-insights.yml)
 
 ## Overview
 

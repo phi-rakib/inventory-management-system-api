@@ -38,6 +38,16 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    public function supplier(): HasOneThrough
+    {
+        return $this->hasOneThrough(Supplier::class, Account::class);
+    }
+
+    public function account(): HasOne
+    {
+        return $this->hasOne(Account::class);
+    }
+
     /**
      * Get the attributes that should be cast.
      *
@@ -49,15 +59,5 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
-    }
-
-    public function supplier(): HasOneThrough
-    {
-        return $this->hasOneThrough(Supplier::class, Account::class);
-    }
-
-    public function account(): HasOne
-    {
-        return $this->hasOne(Account::class);
     }
 }

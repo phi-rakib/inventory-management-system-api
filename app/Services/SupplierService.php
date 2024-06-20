@@ -17,14 +17,38 @@ class SupplierService
      */
     public function store(array $validatedData): void
     {
-        DB::transaction(function () use ($validatedData) {
-
+        DB::transaction(function () use ($validatedData): void {
             $user = $this->createUser($validatedData);
 
             $account = $this->createAccount($validatedData, $user);
 
             $this->createSupplier($validatedData, $user, $account);
         });
+    }
+
+    /**
+     * @param  array<string, string>  $data
+     */
+    public function update(Supplier $supplier, array $data): void
+    {
+        DB::transaction(function () use ($supplier, $data): void {
+            $supplier->update($data);
+
+            $supplier->user()->update([
+                'name' => $data['name'],
+            ]);
+
+            $supplier->account()->update([
+                'name' => $data['name'],
+                'account_number' => $data['account_number'],
+            ]);
+        });
+    }
+
+    public function destroy(Supplier $supplier): void
+    {
+        $supplier->account()->update(['status' => 'inactive']);
+        $supplier->delete();
     }
 
     /**
@@ -48,13 +72,11 @@ class SupplierService
      */
     private function createAccount(array $validatedData, User $user): Account
     {
-        $account = $user->account()->create([
+        return $user->account()->create([
             'name' => $validatedData['name'],
             'account_number' => $validatedData['account_number'] ?? $validatedData['name'].'0001',
             'balance' => 0,
         ]);
-
-        return $account;
     }
 
     /**
@@ -62,7 +84,7 @@ class SupplierService
      */
     private function createSupplier(array $validatedData, User $user, Account $account): Supplier
     {
-        $supplier = $account->supplier()->create([
+        return $account->supplier()->create([
             'name' => $validatedData['name'],
             'email' => $validatedData['email'],
             'description' => $validatedData['description'],
@@ -70,32 +92,5 @@ class SupplierService
             'phone' => $validatedData['phone'],
             'user_id' => $user->id,
         ]);
-
-        return $supplier;
-    }
-
-    /**
-     * @param  array<string, string>  $data
-     */
-    public function update(Supplier $supplier, array $data): void
-    {
-        DB::transaction(function () use ($supplier, $data) {
-            $supplier->update($data);
-
-            $supplier->user()->update([
-                'name' => $data['name'],
-            ]);
-
-            $supplier->account()->update([
-                'name' => $data['name'],
-                'account_number' => $data['account_number'],
-            ]);
-        });
-    }
-
-    public function destroy(Supplier $supplier): void
-    {
-        $supplier->account()->update(['status' => 'inactive']);
-        $supplier->delete();
     }
 }

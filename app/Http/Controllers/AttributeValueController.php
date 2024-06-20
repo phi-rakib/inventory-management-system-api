@@ -50,7 +50,7 @@ class AttributeValueController extends Controller
     {
         Gate::authorize('delete', $attributeValue);
 
-        DB::transaction(function () use ($attributeValue) {
+        DB::transaction(function () use ($attributeValue): void {
             $attributeValue->deleted_by = (int) auth()->id();
             $attributeValue->save();
 

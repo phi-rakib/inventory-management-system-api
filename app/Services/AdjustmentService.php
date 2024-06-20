@@ -11,18 +11,12 @@ use Illuminate\Support\Facades\DB;
 
 class AdjustmentService
 {
-    public function __construct()
-    {
-        //
-    }
-
     /**
      * @param  array<string, mixed>  $data
      */
     public function store(array $data): void
     {
-        DB::transaction(function () use ($data) {
-
+        DB::transaction(function () use ($data): void {
             $warehouseId = (int) $data['warehouse_id'];
             $adjustments = $data['adjustment_items'];
             $reason = $data['reason'];
@@ -38,9 +32,9 @@ class AdjustmentService
 
             $updates = [];
             foreach ($adjustments as $adjustment) {
-                $product = isset($products[$adjustment['product_id']]) ? $products[$adjustment['product_id']] : null;
+                $product = $products[$adjustment['product_id']] ?? null;
                 if ($product) {
-                    $quantityChange = $adjustment['type'] == 'addition' ? $adjustment['quantity'] : -1 * $adjustment['quantity'];
+                    $quantityChange = $adjustment['type'] === 'addition' ? $adjustment['quantity'] : -1 * $adjustment['quantity'];
                     $updates[$product['product_id']] = ['quantity' => $product['quantity'] + $quantityChange];
                 }
             }
@@ -56,12 +50,11 @@ class AdjustmentService
             // create adjustment_product
             $adjustment->products()->attach(array_column($adjustments, null, 'product_id'));
         });
-
     }
 
     public function update(Request $request, Adjustment $adjustment): void
     {
-        DB::transaction(function () use ($adjustment, $request) {
+        DB::transaction(function () use ($adjustment, $request): void {
             $adjustments = $request->input('adjustment_items');
             $reason = $request->input('reason');
             $adjustment_date = $request->input('adjustment_date');
@@ -72,7 +65,7 @@ class AdjustmentService
 
             $update = [];
             foreach ($adjustedProducts as $productId => $product) {
-                $updatedQuantity = $product['type'] == 'addition' ? (-1) * $product['quantity'] : $product['quantity'];
+                $updatedQuantity = $product['type'] === 'addition' ? (-1) * $product['quantity'] : $product['quantity'];
                 $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
             }
             Warehouse::findOrFail($adjustment->warehouse_id)->products()->sync($update);
@@ -83,7 +76,7 @@ class AdjustmentService
             $update = [];
             foreach ($adjustments as $product) {
                 $productId = $product['product_id'];
-                $updatedQuantity = $product['type'] == 'addition' ? $product['quantity'] : (-1) * $product['quantity'];
+                $updatedQuantity = $product['type'] === 'addition' ? $product['quantity'] : (-1) * $product['quantity'];
                 $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
             }
             Warehouse::findOrFail($adjustment->warehouse_id)->products()->sync($update);
@@ -101,7 +94,7 @@ class AdjustmentService
 
     public function destroy(Adjustment $adjustment): void
     {
-        DB::transaction(function () use ($adjustment) {
+        DB::transaction(function () use ($adjustment): void {
             $warehouseProducts = $adjustment->warehouse()->with(['products:id'])->firstOrFail()->toArray();
 
             $warehouseProducts = array_column($warehouseProducts['products'], 'pivot', 'id');
@@ -110,7 +103,7 @@ class AdjustmentService
 
             $update = [];
             foreach ($adjustedProducts as $productId => $product) {
-                $updatedQuantity = $product['type'] == 'subtraction' ? $product['quantity'] : (-1) * $product['quantity'];
+                $updatedQuantity = $product['type'] === 'subtraction' ? $product['quantity'] : (-1) * $product['quantity'];
                 $update[$productId] = ['quantity' => $warehouseProducts[$productId]['quantity'] + $updatedQuantity];
             }
 

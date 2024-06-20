@@ -49,7 +49,7 @@ class ExpenseController extends Controller
     {
         Gate::authorize('delete', $expense);
 
-        DB::transaction(function () use ($expense) {
+        DB::transaction(function () use ($expense): void {
             $expense->account()->increment('balance', $expense->amount);
 
             $expense->deleted_by = (int) auth()->id();
@@ -98,7 +98,7 @@ class ExpenseController extends Controller
 
         Gate::authorize('expense-force-delete', $expense);
 
-        DB::transaction(function () use ($expense) {
+        DB::transaction(function () use ($expense): void {
             $expense->account()->increment('balance', $expense->amount);
 
             $expense->forceDelete();

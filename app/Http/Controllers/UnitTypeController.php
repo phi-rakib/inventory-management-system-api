@@ -26,9 +26,7 @@ class UnitTypeController extends Controller
     {
         Gate::authorize('view', $unitType);
 
-        $unitType = $unitType->load(['creator', 'updater', 'deleter', 'products']);
-
-        return $unitType;
+        return $unitType->load(['creator', 'updater', 'deleter', 'products']);
     }
 
     public function store(StoreUnitTypeRequest $request): JsonResponse
@@ -49,7 +47,7 @@ class UnitTypeController extends Controller
     {
         Gate::authorize('delete', $unitType);
 
-        DB::transaction(function () use ($unitType) {
+        DB::transaction(function () use ($unitType): void {
             $unitType->deleted_by = (int) Auth::id();
             $unitType->save();
 

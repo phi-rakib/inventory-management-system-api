@@ -18,9 +18,7 @@ class ExpenseCategoryController extends Controller
     {
         Gate::authorize('viewAny', ExpenseCategory::class);
 
-        $expenseCategories = ExpenseCategory::latest()->paginate(20);
-
-        return $expenseCategories;
+        return ExpenseCategory::latest()->paginate(20);
     }
 
     public function show(ExpenseCategory $expenseCategory): ExpenseCategory
@@ -48,7 +46,7 @@ class ExpenseCategoryController extends Controller
     {
         Gate::authorize('delete', $expenseCategory);
 
-        DB::transaction(function () use ($expenseCategory) {
+        DB::transaction(function () use ($expenseCategory): void {
             $expenseCategory->deleted_by = (int) auth()->id();
             $expenseCategory->save();
 

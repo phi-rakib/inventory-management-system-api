@@ -40,7 +40,7 @@ class DepositController extends Controller
     {
         $payload = $request->validated();
 
-        DB::transaction(function () use ($payload) {
+        DB::transaction(function () use ($payload): void {
             $deposit = Deposit::create($payload);
 
             $deposit->account()->increment('balance', $deposit->amount);
@@ -71,7 +71,6 @@ class DepositController extends Controller
             DB::commit();
 
             return response()->json(['message' => 'Deposit updated']);
-
         } catch (\Exception $ex) {
             DB::rollBack();
 
@@ -119,7 +118,7 @@ class DepositController extends Controller
 
         Gate::authorize('restore', $deposit);
 
-        DB::transaction(function () use ($deposit) {
+        DB::transaction(function () use ($deposit): void {
             $deposit->restore();
 
             $deposit->account()->increment('balance', $deposit->amount);
