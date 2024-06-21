@@ -25,7 +25,7 @@ class UpdateAccountRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|max:255',
+            'name' => 'string|required|max:255',
             'description' => 'nullable',
             'status' => 'required|in:active,inactive',
         ];
