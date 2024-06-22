@@ -16,8 +16,16 @@ class DatabaseSeeder extends Seeder
         User::factory(10)->create();
 
         $this->call([
+            PermissionSeeder::class,
             AccountSeeder::class,
-            AttributeSeeder::class,
+            DepositCategorySeeder::class,
+            DepositSeeder::class,
+            ExpenseCategorySeeder::class,
+            ExpenseSeeder::class,
+            PaymentMethodSeeder::class,
+            SupplierSeeder::class,
+            UnitTypeSeeder::class,
+            ProductSeeder::class,
         ]);
     }
 }

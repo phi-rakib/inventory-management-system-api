@@ -13,7 +13,9 @@ class DepositSeeder extends Seeder
     public function run(): void
     {
         Deposit::withoutEvents(function () {
-            Deposit::factory(100)->create();
+            Deposit::factory(100)->create([
+                'created_by' => 1,
+            ]);
         });
     }
 }
