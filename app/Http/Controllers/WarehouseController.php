@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing warehouses
- * 
+ *
  * @group Warehouses
  */
 class WarehouseController extends Controller
@@ -67,7 +67,7 @@ class WarehouseController extends Controller
 
     /**
      * Soft delete a warehouse
-     * 
+     *
      * @response 204{
      *   "message": "Warehouse deleted successfully"
      * }
@@ -88,8 +88,9 @@ class WarehouseController extends Controller
 
     /**
      * Restore a soft deleted warehouse
-     * 
+     *
      * @urlParam id int required The ID of the warehouse to restore. Example: 1
+     *
      * @response 200 {
      *   "message": "Warehouse restored successfully"
      * }
@@ -107,8 +108,9 @@ class WarehouseController extends Controller
 
     /**
      * Permanently delete a warehouse
-     * 
+     *
      * @urlParam id int required The ID of the warehouse to force delete. Example: 1
+     *
      * @response 204{
      *   "message": "Warehouse force deleted successfully"
      * }

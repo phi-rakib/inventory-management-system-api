@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing expenses
- * 
+ *
  * @group Expenses
  */
 class ExpenseController extends Controller
@@ -64,7 +64,7 @@ class ExpenseController extends Controller
 
     /**
      * Soft deletes an existing expense
-     * 
+     *
      * @response 204 {
      *   "message": "Expense deleted successfully."
      *}
@@ -87,8 +87,9 @@ class ExpenseController extends Controller
 
     /**
      * Restore a soft deleted expense
-     * 
+     *
      * @urlParam id int required The ID of the expense to restore. Example: 1
+     *
      * @response 200 {
      *   "message": "Expense restored successfully"
      * }
@@ -126,8 +127,9 @@ class ExpenseController extends Controller
 
     /**
      * Permanently deletes an existing expense
-     * 
+     *
      * @urlParam id int required The ID of the expense to force delete. Example: 1
+     *
      * @response 204 {
      *     "message": "Expense force deleted successfully"
      * }

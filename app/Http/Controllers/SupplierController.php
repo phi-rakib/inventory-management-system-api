@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing suppliers
- * 
+ *
  * @group Suppliers
  */
 class SupplierController extends Controller
@@ -63,7 +63,7 @@ class SupplierController extends Controller
 
     /**
      * Soft deletes a supplier
-     * 
+     *
      * @response 204{
      *   "message": "Supplier deleted successfully"
      * }
@@ -79,8 +79,9 @@ class SupplierController extends Controller
 
     /**
      * Restore a soft deleted supplier
-     * 
+     *
      * @urlParam id int required The ID of the supplier to restore. Example: 1
+     *
      * @response 200 {
      *   "message": "Supplier restored successfully"
      * }
@@ -98,8 +99,9 @@ class SupplierController extends Controller
 
     /**
      * Permanently delete a supplier
-     * 
+     *
      * @urlParam id int required The ID of the supplier to force delete. Example: 1
+     *
      * @response 204 {
      *   "message": "Supplier force deleted successfully"
      * }

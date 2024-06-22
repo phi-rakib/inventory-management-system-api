@@ -15,7 +15,7 @@ class WarehouseSeeder extends Seeder
     public function run(): void
     {
         Auth::loginUsingId(User::first()->id, true);
-        
+
         Warehouse::factory()->count(10)->create();
     }
 }

@@ -15,7 +15,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing unit types
- * 
+ *
  * @group Unit Types
  */
 class UnitTypeController extends Controller
@@ -62,7 +62,7 @@ class UnitTypeController extends Controller
 
     /**
      * Soft delete an existing unit type.
-     * 
+     *
      * @response 204 {
      *   "message": "Unit type deleted successfully."
      * }
@@ -83,8 +83,9 @@ class UnitTypeController extends Controller
 
     /**
      * Restore a soft deleted unit type
-     * 
+     *
      * @urlParam id int required The ID of the unit type to restore. Example: 1
+     *
      * @response 200 {
      *   "message": "Unit Type restored successfully"
      * }
@@ -102,8 +103,9 @@ class UnitTypeController extends Controller
 
     /**
      * Permanently delete a soft deleted unit type
-     * 
+     *
      * @urlParam id int required The ID of the unit type to delete. Example: 1
+     *
      * @response 204 {
      *   "message": "Unit Type force deleted successfully"
      * }

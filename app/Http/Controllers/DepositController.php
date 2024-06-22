@@ -14,14 +14,13 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing deposits
- * 
+ *
  * @group Deposits
  */
 class DepositController extends Controller
 {
     /**
      * Get a paginated list of deposits.
-     *
      */
     public function index(): LengthAwarePaginator
     {
@@ -34,7 +33,6 @@ class DepositController extends Controller
 
     /**
      * Shows a deposit by id.
-     *
      */
     public function show(Deposit $deposit): Deposit
     {
@@ -51,7 +49,6 @@ class DepositController extends Controller
 
     /**
      * Stores a new deposit.
-     * 
      */
     public function store(StoreDepositRequest $request): JsonResponse
     {
@@ -68,7 +65,6 @@ class DepositController extends Controller
 
     /**
      * Updates an existing deposit.
-     *
      */
     public function update(UpdateDepositRequest $request, Deposit $deposit): JsonResponse
     {
@@ -144,6 +140,7 @@ class DepositController extends Controller
      * Restores a soft deleted deposit.
      *
      * @urlParam id int required The ID of the deposit to restore. Example: 1
+     *
      * @response 200 {
      *     "message": "Deposit restored successfully"
      * }
@@ -167,6 +164,7 @@ class DepositController extends Controller
      * Permanently deletes an existing deposit.
      *
      * @urlParam id int required The ID of the deposit to force delete. Example: 1
+     *
      * @response 204 {
      *     "message": "Deposit force deleted successfully"
      * }

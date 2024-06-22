@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing brands
- * 
+ *
  * @group Brands
  */
 class BrandController extends Controller
@@ -83,6 +83,7 @@ class BrandController extends Controller
      * Restore a soft deleted brand
      *
      * @urlParam id int required The ID of the brand to restore. Example: 1
+     *
      * @response 200 {
      *   "message": "Brand restored successfully"
      * }
@@ -102,6 +103,7 @@ class BrandController extends Controller
      * Permanently delete a brand
      *
      * @urlParam id int required The ID of the brand to delete. Example: 1
+     *
      * @response 204{
      *   "message": "Brand force deleted successfully"
      * }

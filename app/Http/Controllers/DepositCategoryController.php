@@ -13,7 +13,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing deposit categories
- * 
+ *
  * @group Deposit Categories
  */
 class DepositCategoryController extends Controller
@@ -68,7 +68,7 @@ class DepositCategoryController extends Controller
 
     /**
      * Soft deletes a deposit category.
-     * 
+     *
      * @response 204{
      *   "message": "Deposit category deleted successfully."
      * }
@@ -89,8 +89,9 @@ class DepositCategoryController extends Controller
 
     /**
      * Restores a soft deleted deposit category
-     * 
+     *
      * @urlParam id int required The ID of the deposit category to restore. Example: 1
+     *
      * @response 200{
      *   "message": "Deposit category restored successfully."
      * }
@@ -110,8 +111,9 @@ class DepositCategoryController extends Controller
 
     /**
      * Permanently deletes an existing deposit category.
-     * 
+     *
      * @urlParam id int required The ID of the deposit category to force delete. Example: 1
+     *
      * @response 204{
      *   "message": "Deposit Category force deleted"
      * }

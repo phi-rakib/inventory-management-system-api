@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing expense categories
- * 
+ *
  * @group Expense Categories
  */
 class ExpenseCategoryController extends Controller
@@ -84,6 +84,7 @@ class ExpenseCategoryController extends Controller
      * Restore a soft deleted expense category
      *
      * @urlParam id int required The ID of the expense category to restore. Example: 1
+     *
      * @response 200 {
      *   "message": "Expense Category restored successfully"
      * }
@@ -103,6 +104,7 @@ class ExpenseCategoryController extends Controller
      * Permanently delete an expense category
      *
      * @urlParam id int required The ID of the expense category to delete. Example: 1
+     *
      * @response 204 {
      *   "message": "Expense Category force deleted successfully"
      * }

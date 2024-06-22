@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing payment methods
- * 
+ *
  * @group Payment Methods
  */
 class PaymentMethodController extends Controller
@@ -61,7 +61,7 @@ class PaymentMethodController extends Controller
 
     /**
      * Soft delete a payment method
-     * 
+     *
      * @response 204 {
      *   "message": "Payment method deleted"
      * }
@@ -82,8 +82,9 @@ class PaymentMethodController extends Controller
 
     /**
      * Restore a soft deleted payment method
-     * 
+     *
      * @urlParam id int required The ID of the payment method to restore. Example: 1
+     *
      * @response 200 {
      *   "message": "Payment method restored"
      * }
@@ -101,8 +102,9 @@ class PaymentMethodController extends Controller
 
     /**
      * Permanently delete a payment method
-     * 
+     *
      * @urlParam id int required The ID of the payment method to force delete. Example: 1
+     *
      * @response 204 {
      *   "message": "Payment method force deleted successfully"
      * }

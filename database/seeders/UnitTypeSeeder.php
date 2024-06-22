@@ -15,7 +15,7 @@ class UnitTypeSeeder extends Seeder
     public function run(): void
     {
         Auth::loginUsingId(User::first()->id, true);
-        
+
         UnitType::factory(10)->create();
     }
 }

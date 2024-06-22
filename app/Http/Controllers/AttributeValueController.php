@@ -14,14 +14,13 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing attribute values
- * 
+ *
  * @group AttributeValues
  */
 class AttributeValueController extends Controller
 {
     /**
      * Get a paginated list of AttributeValues.
-     *
      */
     public function index(): LengthAwarePaginator
     {
@@ -32,7 +31,6 @@ class AttributeValueController extends Controller
 
     /**
      * Get an attribute value by id
-     *
      */
     public function show(AttributeValue $attributeValue): AttributeValue
     {
@@ -47,7 +45,6 @@ class AttributeValueController extends Controller
 
     /**
      * Stores a new attribute value
-     *
      */
     public function store(StoreAttributeValueRequest $request): JsonResponse
     {
@@ -58,7 +55,6 @@ class AttributeValueController extends Controller
 
     /**
      * Updates an attribute value
-     *
      */
     public function update(UpdateAttributeValueRequest $request, AttributeValue $attributeValue): JsonResponse
     {
@@ -90,8 +86,9 @@ class AttributeValueController extends Controller
 
     /**
      * Restore a soft deleted attribute value
-     * 
+     *
      * @urlParam id int required The ID of the attribute value to restore. Example: 1
+     *
      * @response 200 {
      *     "message": "Attribute value restored successfully"
      * }
@@ -109,6 +106,7 @@ class AttributeValueController extends Controller
      * Permanently delete an attribute value
      *
      * @urlParam id int required The ID of the attribute value to force delete. Example: 1
+     *
      * @response 204 {
      *     "message": "Attribute value force deleted successfully"
      * }

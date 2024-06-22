@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing adjustments
- * 
+ *
  * @group Adjustments
  */
 class AdjustmentController extends Controller
@@ -23,7 +23,6 @@ class AdjustmentController extends Controller
 
     /**
      * Get a paginated list of Adjustments.
-     *
      */
     public function index(): LengthAwarePaginator
     {
@@ -34,7 +33,6 @@ class AdjustmentController extends Controller
 
     /**
      * Shows an adjustment by id.
-     *
      */
     public function show(Adjustment $adjustment): Adjustment
     {
@@ -45,7 +43,6 @@ class AdjustmentController extends Controller
 
     /**
      * Stores a new adjustment
-     *
      */
     public function store(StoreAdjustmentRequest $request): JsonResponse
     {
@@ -56,7 +53,6 @@ class AdjustmentController extends Controller
 
     /**
      * Updates an existing adjustment
-     *
      */
     public function update(UpdateAdjustmentRequest $request, Adjustment $adjustment): JsonResponse
     {
@@ -67,7 +63,7 @@ class AdjustmentController extends Controller
 
     /**
      * Deletes an existing adjustment
-     * 
+     *
      * @response 204 {
      *     "message": "Adjustment deleted successfully"
      * }

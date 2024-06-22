@@ -15,7 +15,7 @@ class SupplierSeeder extends Seeder
     public function run(): void
     {
         Auth::loginUsingId(User::first()->id, true);
-        
+
         Supplier::factory(10)->create();
     }
 }

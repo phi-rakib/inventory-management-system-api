@@ -14,7 +14,6 @@ class AuthController extends Controller
      * Authenticates a user and returns an access token.
      *
      * @group Authentications
-     * 
      */
     public function login(AuthRequest $request): JsonResponse
     {

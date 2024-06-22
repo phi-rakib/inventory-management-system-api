@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing products
- * 
+ *
  * @group Products
  */
 class ProductController extends Controller
@@ -63,7 +63,7 @@ class ProductController extends Controller
 
     /**
      * Soft deletes a product.
-     * 
+     *
      * @response 204{
      *   "message": "Product deleted successfully"
      * }

@@ -15,7 +15,7 @@ class ExpenseSeeder extends Seeder
     public function run(): void
     {
         Auth::loginUsingId(User::first()->id, true);
-        
+
         Expense::factory(10)->create();
     }
 }

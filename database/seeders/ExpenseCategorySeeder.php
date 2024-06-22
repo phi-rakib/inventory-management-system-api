@@ -14,7 +14,7 @@ class ExpenseCategorySeeder extends Seeder
     {
         ExpenseCategory::withoutEvents(function () {
             ExpenseCategory::factory(10)->create([
-                'created_by' => 1
+                'created_by' => 1,
             ]);
         });
     }

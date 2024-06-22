@@ -14,7 +14,7 @@ use Illuminate\Support\Facades\Gate;
 
 /**
  * APIs for managing categories
- * 
+ *
  * @group Categories
  */
 class CategoryController extends Controller
@@ -61,6 +61,7 @@ class CategoryController extends Controller
 
     /**
      * Softly deletes a category
+     *
      * @response 204 {
      *     "message": "Category deleted successfully."
      * }
@@ -79,8 +80,9 @@ class CategoryController extends Controller
 
     /**
      * Restore a soft deleted category
-     * 
+     *
      * @urlParam id int required The ID of the category to restore. Example: 1
+     *
      * @response 200 {
      *     "message": "Category restored succeessfully"
      * }
@@ -100,6 +102,7 @@ class CategoryController extends Controller
      * Permanently delete a category
      *
      * @urlParam id int required The ID of the category to force delete. Example: 1
+     *
      * @response 204{
      *     "message": "Category force deleted successfully"
      * }

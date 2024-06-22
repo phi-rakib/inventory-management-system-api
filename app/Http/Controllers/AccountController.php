@@ -18,6 +18,7 @@ class AccountController extends Controller
      * Get a paginated list of accounts.
      *
      * @group Accounts
+     *
      * @response 200 {
      *     "data": [
      *         {
@@ -67,6 +68,7 @@ class AccountController extends Controller
      * Shows an account by id.
      *
      * @group Accounts
+     *
      * @response 200 {
      *     "id": 1,
      *     "name": "Account 1",
@@ -90,6 +92,7 @@ class AccountController extends Controller
      *         "account_id": 1
      *     }
      * }
+     *
      * @apiResourceModel App\Models\Account
      */
     public function show(Account $account): Account
@@ -103,7 +106,9 @@ class AccountController extends Controller
      * Store a new account.
      *
      * @group Accounts
+     *
      * @bodyParam name string required The name of the account. Example: "New Account"
+     *
      * @response 201 {
      *     "message": "Account created successfully"
      * }
@@ -119,8 +124,11 @@ class AccountController extends Controller
      * Update an existing account.
      *
      * @group Accounts
+     *
      * @bodyParam name string required The new name of the account. Example: "Updated Account"
+     *
      * @apiResourceModel App\Models\Account
+     *
      * @response 200 {
      *     "message": "Account updated successfully"
      * }
@@ -136,6 +144,7 @@ class AccountController extends Controller
      * Delete an account.
      *
      * @group Accounts
+     *
      * @response 204 {
      *     "message": "Account deleted successfully"
      * }
@@ -158,7 +167,9 @@ class AccountController extends Controller
      * Restore a soft deleted account.
      *
      * @group Accounts
+     *
      * @urlParam id int required The ID of the account to restore. Example: 1
+     *
      * @response 200 {
      *     "message": "Account restored successfully"
      * }
@@ -178,7 +189,9 @@ class AccountController extends Controller
      * Permanently delete a soft deleted account.
      *
      * @group Accounts
+     *
      * @urlParam id int required The ID of the account to force delete. Example: 1
+     *
      * @response 204 {
      *     "message": "Account force deleted successfully"
      * }
