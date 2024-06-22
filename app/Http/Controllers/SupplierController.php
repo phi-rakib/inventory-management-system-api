@@ -12,10 +12,18 @@ use Illuminate\Http\JsonResponse;
 use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * APIs for managing suppliers
+ *
+ * @group Suppliers
+ */
 class SupplierController extends Controller
 {
     public function __construct(private SupplierService $supplierService) {}
 
+    /**
+     * Get a paginated list of suppliers.
+     */
     public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Supplier::class);
@@ -23,6 +31,9 @@ class SupplierController extends Controller
         return Supplier::latest()->with(['creator'])->paginate(20);
     }
 
+    /**
+     * Get a supplier by id
+     */
     public function show(Supplier $supplier): Supplier
     {
         Gate::authorize('view', $supplier);
@@ -30,6 +41,9 @@ class SupplierController extends Controller
         return $supplier->load(['creator', 'account']);
     }
 
+    /**
+     * Store a new supplier
+     */
     public function store(StoreSupplierRequest $request): JsonResponse
     {
         $this->supplierService->store($request->validated());
@@ -37,6 +51,9 @@ class SupplierController extends Controller
         return response()->json(['message' => 'Supplier created successfully'], 201);
     }
 
+    /**
+     * Update an existing supplier
+     */
     public function update(UpdateSupplierRequest $request, Supplier $supplier): JsonResponse
     {
         $this->supplierService->update($supplier, $request->validated());
@@ -44,6 +61,13 @@ class SupplierController extends Controller
         return response()->json(['message' => 'Supplier updated successfully'], 200);
     }
 
+    /**
+     * Soft deletes a supplier
+     *
+     * @response 204{
+     *   "message": "Supplier deleted successfully"
+     * }
+     */
     public function destroy(Supplier $supplier): JsonResponse
     {
         Gate::authorize('delete', $supplier);
@@ -53,6 +77,15 @@ class SupplierController extends Controller
         return response()->json(['message' => 'Supplier deleted successfully'], 204);
     }
 
+    /**
+     * Restore a soft deleted supplier
+     *
+     * @urlParam id int required The ID of the supplier to restore. Example: 1
+     *
+     * @response 200 {
+     *   "message": "Supplier restored successfully"
+     * }
+     */
     public function restore(int $id): JsonResponse
     {
         $supplier = Supplier::withTrashed()->findOrFail($id);
@@ -64,6 +97,15 @@ class SupplierController extends Controller
         return response()->json(['message' => 'Supplier restored successfully']);
     }
 
+    /**
+     * Permanently delete a supplier
+     *
+     * @urlParam id int required The ID of the supplier to force delete. Example: 1
+     *
+     * @response 204 {
+     *   "message": "Supplier force deleted successfully"
+     * }
+     */
     public function forceDelete(int $id): JsonResponse
     {
         $supplier = Supplier::withTrashed()->findOrFail($id);

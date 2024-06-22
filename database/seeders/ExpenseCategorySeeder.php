@@ -2,18 +2,18 @@
 
 namespace Database\Seeders;
 
-use App\Models\Deposit;
+use App\Models\ExpenseCategory;
 use Illuminate\Database\Seeder;
 
-class DepositSeeder extends Seeder
+class ExpenseCategorySeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        Deposit::withoutEvents(function () {
-            Deposit::factory(100)->create([
+        ExpenseCategory::withoutEvents(function () {
+            ExpenseCategory::factory(10)->create([
                 'created_by' => 1,
             ]);
         });
