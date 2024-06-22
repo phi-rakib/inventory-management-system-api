@@ -13,8 +13,16 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * APIs for managing expenses
+ * 
+ * @group Expenses
+ */
 class ExpenseController extends Controller
 {
+    /**
+     * Get a paginated list of expenses
+     */
     public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Expense::class);
@@ -22,6 +30,9 @@ class ExpenseController extends Controller
         return Expense::with(['account', 'expenseCategory', 'paymentMethod', 'creator'])->latest()->paginate(20);
     }
 
+    /**
+     * Get an expense by id
+     */
     public function show(Expense $expense): Expense
     {
         Gate::authorize('view', $expense);
@@ -31,6 +42,9 @@ class ExpenseController extends Controller
         return $expense;
     }
 
+    /**
+     * Store a new expense
+     */
     public function store(StoreExpenseRequest $request): JsonResponse
     {
         Expense::create($request->validated());
@@ -38,6 +52,9 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'Expense created successfully.'], 201);
     }
 
+    /**
+     * Update an existing expense
+     */
     public function update(UpdateExpenseRequest $request, Expense $expense): JsonResponse
     {
         $expense->update($request->validated());
@@ -45,6 +62,13 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'Expense updated successfully.'], 200);
     }
 
+    /**
+     * Soft deletes an existing expense
+     * 
+     * @response 204 {
+     *   "message": "Expense deleted successfully."
+     *}
+     */
     public function destroy(Expense $expense): JsonResponse
     {
         Gate::authorize('delete', $expense);
@@ -61,6 +85,14 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'Expense deleted successfully.'], 204);
     }
 
+    /**
+     * Restore a soft deleted expense
+     * 
+     * @urlParam id int required The ID of the expense to restore. Example: 1
+     * @response 200 {
+     *   "message": "Expense restored successfully"
+     * }
+     */
     public function restore(int $id): JsonResponse
     {
         $expense = Expense::withTrashed()->findOrFail($id);
@@ -92,6 +124,14 @@ class ExpenseController extends Controller
         return response()->json(['message' => 'Expense restored successfully']);
     }
 
+    /**
+     * Permanently deletes an existing expense
+     * 
+     * @urlParam id int required The ID of the expense to force delete. Example: 1
+     * @response 204 {
+     *     "message": "Expense force deleted successfully"
+     * }
+     */
     public function forceDelete(int $id): JsonResponse
     {
         $expense = Expense::withTrashed()->findOrFail($id);

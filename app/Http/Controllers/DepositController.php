@@ -12,8 +12,17 @@ use Illuminate\Pagination\LengthAwarePaginator;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * APIs for managing deposits
+ * 
+ * @group Deposits
+ */
 class DepositController extends Controller
 {
+    /**
+     * Get a paginated list of deposits.
+     *
+     */
     public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', Deposit::class);
@@ -23,6 +32,10 @@ class DepositController extends Controller
             ->paginate(20);
     }
 
+    /**
+     * Shows a deposit by id.
+     *
+     */
     public function show(Deposit $deposit): Deposit
     {
         Gate::authorize('view', $deposit);
@@ -36,6 +49,10 @@ class DepositController extends Controller
         return $deposit;
     }
 
+    /**
+     * Stores a new deposit.
+     * 
+     */
     public function store(StoreDepositRequest $request): JsonResponse
     {
         $payload = $request->validated();
@@ -49,6 +66,10 @@ class DepositController extends Controller
         return response()->json(['message' => 'Amount Deposited Successfully'], 201);
     }
 
+    /**
+     * Updates an existing deposit.
+     *
+     */
     public function update(UpdateDepositRequest $request, Deposit $deposit): JsonResponse
     {
         DB::beginTransaction();
@@ -78,6 +99,13 @@ class DepositController extends Controller
         }
     }
 
+    /**
+     * Deletes an existing deposit.
+     *
+     * @response 204 {
+     *     "message": "Deposited amount deleted"
+     * }
+     */
     public function destroy(Deposit $deposit): JsonResponse
     {
         Gate::authorize('delete', $deposit);
@@ -112,6 +140,14 @@ class DepositController extends Controller
         }
     }
 
+    /**
+     * Restores a soft deleted deposit.
+     *
+     * @urlParam id int required The ID of the deposit to restore. Example: 1
+     * @response 200 {
+     *     "message": "Deposit restored successfully"
+     * }
+     */
     public function restore(int $id): JsonResponse
     {
         $deposit = Deposit::withTrashed()->findOrFail($id);
@@ -127,6 +163,14 @@ class DepositController extends Controller
         return response()->json(['message' => 'Deposit restored successfully']);
     }
 
+    /**
+     * Permanently deletes an existing deposit.
+     *
+     * @urlParam id int required The ID of the deposit to force delete. Example: 1
+     * @response 204 {
+     *     "message": "Deposit force deleted successfully"
+     * }
+     */
     public function forceDelete(int $id): JsonResponse
     {
         $deposit = Deposit::findOrFail($id);

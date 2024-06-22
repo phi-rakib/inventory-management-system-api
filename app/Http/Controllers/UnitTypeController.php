@@ -13,8 +13,16 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Gate;
 
+/**
+ * APIs for managing unit types
+ * 
+ * @group Unit Types
+ */
 class UnitTypeController extends Controller
 {
+    /**
+     * Get a paginated list of unit types.
+     */
     public function index(): LengthAwarePaginator
     {
         Gate::authorize('viewAny', UnitType::class);
@@ -22,6 +30,9 @@ class UnitTypeController extends Controller
         return UnitType::latest()->with(['creator', 'updater', 'deleter'])->paginate(20);
     }
 
+    /**
+     * Get a unit type by id.
+     */
     public function show(UnitType $unitType): UnitType
     {
         Gate::authorize('view', $unitType);
@@ -29,6 +40,9 @@ class UnitTypeController extends Controller
         return $unitType->load(['creator', 'updater', 'deleter', 'products']);
     }
 
+    /**
+     * Store a new unit type.
+     */
     public function store(StoreUnitTypeRequest $request): JsonResponse
     {
         UnitType::create($request->validated());
@@ -36,6 +50,9 @@ class UnitTypeController extends Controller
         return response()->json(['message' => 'Unit type created successfully.'], 201);
     }
 
+    /**
+     * Update an existing unit type.
+     */
     public function update(UpdateUnitTypeRequest $request, UnitType $unitType): JsonResponse
     {
         $unitType->update($request->validated());
@@ -43,6 +60,13 @@ class UnitTypeController extends Controller
         return response()->json(['message' => 'Unit type updated successfully.']);
     }
 
+    /**
+     * Soft delete an existing unit type.
+     * 
+     * @response 204 {
+     *   "message": "Unit type deleted successfully."
+     * }
+     */
     public function destroy(UnitType $unitType): JsonResponse
     {
         Gate::authorize('delete', $unitType);
@@ -57,6 +81,14 @@ class UnitTypeController extends Controller
         return response()->json(['message' => 'Unit type deleted successfully.'], 204);
     }
 
+    /**
+     * Restore a soft deleted unit type
+     * 
+     * @urlParam id int required The ID of the unit type to restore. Example: 1
+     * @response 200 {
+     *   "message": "Unit Type restored successfully"
+     * }
+     */
     public function restore(int $id): JsonResponse
     {
         $unitType = UnitType::withTrashed()->findOrFail($id);
@@ -68,6 +100,14 @@ class UnitTypeController extends Controller
         return response()->json(['message' => 'Unit Type restored successfully']);
     }
 
+    /**
+     * Permanently delete a soft deleted unit type
+     * 
+     * @urlParam id int required The ID of the unit type to delete. Example: 1
+     * @response 204 {
+     *   "message": "Unit Type force deleted successfully"
+     * }
+     */
     public function forceDelete(int $id): JsonResponse
     {
         $unitType = UnitType::findOrFail($id);
